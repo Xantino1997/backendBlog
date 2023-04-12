@@ -40,7 +40,7 @@ mongoose.connect(uri, {
 }).then(() => {
   console.log('Conexión exitosa a la base de datos');
 }).catch((error) => {
-  console.log('Error al conectar a la base de datos:', error);
+  console.log('Error al conectar a la base de datos Mongo DB:', error);
 });
 
 app.post('/test', (req, res, next) => {
