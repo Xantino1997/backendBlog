@@ -38,9 +38,9 @@ mongoose.connect(uri, {
   useUnifiedTopology: true, // utiliza la nueva topología unificada
 
 }).then(() => {
-  console.log('Conexión exitosa a la base de datos');
+  console.log('Conexión exitosa a la base de datos  Mongo DB:');
 }).catch((error) => {
-  console.log('Error al conectar a la base de datos Mongo DB:', error);
+  console.log('Error al conectar a la base de datos', error);
 });
 
 app.post('/test', (req, res, next) => {
