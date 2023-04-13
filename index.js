@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 const salt = bcrypt.genSaltSync(10);
-const secret = 'asdfe45we45w345wegw345werjktjwertkj';
+const secret = 'asdfe45we45w345wegw345werjktjwertj';
 
 app.use(cors({ credentials: true, origin: 'https://blog3-eta.vercel.app' }));
 app.use(express.json());
