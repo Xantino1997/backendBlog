@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-app.use(cors({ credentials: true, origin: 'https://blog3-eta.vercel.app/' }));
+app.use(cors({ credentials: true, origin: 'https://blog3-eta.vercel.app' }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -38,9 +38,9 @@ mongoose.connect(uri, {
   useUnifiedTopology: true, // utiliza la nueva topología unificada
 
 }).then(() => {
-  console.log('Conexión exitosa a la base de datos  Mongo DB:');
+  console.log('Conexión exitosa a la base Mongo database');
 }).catch((error) => {
-  console.log('Error al conectar a la base de datos', error);
+  console.log('Error al conectar a la base de datos:', error);
 });
 
 app.post('/test', (req, res, next) => {
@@ -104,6 +104,7 @@ app.get('/profile', (req, res) => {
       return res.status(401).json({ message: 'Token inválido' });
     }
     res.json(info);
+    console.log(info);
   });
 });
 
@@ -190,6 +191,6 @@ app.get('/post/:id', async (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log('Runnig SERVER')
+  console.log('Runnig SERVER ' + port);
 });
 //
