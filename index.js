@@ -12,7 +12,7 @@ const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const dotenv = require('dotenv').config();
 
-const port = process.env.REACT_APP_PORT;
+const port = process.env.REACT_APP_PORT || 4000;
 const uri = process.env.REACT_APP_URI
 
 const bodyParser = require('body-parser');
@@ -21,11 +21,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
+mongoose.connect(uri)
 
 
 const salt = bcrypt.genSaltSync(10);
-const secret = 'asdfe45we45w345wegw345werjktjwertj';
+const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 app.use(cors({ credentials: true, origin: 'https://blog3-eta.vercel.app' }));
 app.use(express.json());
@@ -49,6 +49,7 @@ app.post('/test', (req, res, next) => {
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
+  mongoose.connect(uri)
   const { username, password } = req.body;
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
@@ -71,6 +72,7 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
 
 
 app.post('/login', async (req, res) => {
+  mongoose.connect(uri)
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
   const passOk = bcrypt.compareSync(password, userDoc.password);
@@ -95,6 +97,7 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/profile', (req, res) => {
+  mongoose.connect(uri)
   const { token } = req.cookies;
   if (!token) {
     return res.status(401).json({ message: 'No se proporcionó un token' });
@@ -112,10 +115,12 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
+  mongoose.connect(uri)
   res.cookie('token', '').json('ok');
 });
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+  mongoose.connect(uri)
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
@@ -140,6 +145,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+  mongoose.connect(uri)
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -176,6 +182,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.get('/post', async (req, res) => {
+  mongoose.connect(uri)
   res.json(
     await Post.find()
       .populate('author', ['username'])
@@ -185,6 +192,7 @@ app.get('/post', async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
+  mongoose.connect(uri)
   const { id } = req.params;
   const postDoc = await Post.findById(id).populate('author', ['username']);
   res.json(postDoc);
