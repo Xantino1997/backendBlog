@@ -1,0 +1,27 @@
+name: sentidos
+services:
+  web:
+    build: .
+    env:
+      PORT: $${{PORT}}
+    command: yarn start
+    routes:
+      - path: /
+        port: web
+  mongodb:
+    image: mongo:4
+    env:
+      MONGO_INITDB_ROOT_USERNAME: 33333333
+      MONGO_INITDB_ROOT_PASSWORD: 2222222
+      REACT_APP_URI: 1111111
+  mongodb-express:
+    image: mongo-express
+    env:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      REACT_APP_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongodb
