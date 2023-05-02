@@ -43,8 +43,9 @@ mongoose.connect(uri, {
 });
 
 app.post('/test', (req, res, next) => {
-  res.send('Hello world')
-})
+  res.json({ message: 'Hello world' });
+});
+
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
