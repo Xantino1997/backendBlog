@@ -43,7 +43,7 @@ mongoose.connect(uri, {
 });
 
 app.post('/test', (req, res, next) => {
-  res.JSON.send('HOLA MUNDO')
+  res.send('HOLA MUNDO')
 })
 
 
