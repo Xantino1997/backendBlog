@@ -12,7 +12,7 @@ const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const dotenv = require('dotenv').config();
 
-const port = process.env.REACT_APP_PORT || 4000;
+const port = process.env.PORT;
 const uri = process.env.REACT_APP_URI
 
 const bodyParser = require('body-parser');
@@ -21,13 +21,12 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect(uri)
 
 
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-app.use(cors({ credentials: true, origin: 'https://blog3-eta.vercel.app' }));
+app.use(cors({ credentials: true, origin: '*' }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
