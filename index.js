@@ -42,9 +42,9 @@ mongoose.connect(uri, {
   console.log('Error al conectar a la base de datos:', error);
 });
 
-app.post('/test', (req, res, next) => {
-  res.json({ message: 'Hello world' });
-});
+// app.post('/test', (req, res, next) => {
+//   res.json({ message: 'Hello world' });
+// });
 
 
 
