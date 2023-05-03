@@ -31,6 +31,19 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
+app.get('/', (req, res) => {
+  res.send({ msg: `Hello World , Welcome to the life` })
+})
+
+app.post("/welcome", (req, res) => {
+  const { username } = req.body;
+  res.status(200).send({ msg: `${username}, Welcome to the life` })
+})
+
+
+
+
+
 
 mongoose.connect(uri, {
   useNewUrlParser: true,    // usa el nuevo parser de URL
