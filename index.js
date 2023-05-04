@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-const allowedOrigins = ['https://blog3-eta.vercel.app'];
+const allowedOrigins = ['https://blog3-eta.vercel.app', '*'];
 
 const corsOptions = {
   origin: function (origin, callback) {
