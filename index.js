@@ -83,31 +83,26 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
 
 
 app.post('/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const userDoc = await User.findOne({ username });
-
-    if (!userDoc) {
-      return res.status(400).json('User not found');
-    }
-
-    const passOk = await bcrypt.compare(password, userDoc.password);
-
-    if (passOk) {
-      const token = jwt.sign({ username, id: userDoc._id }, secret, { expiresIn: '1h' });
+  mongoose.connect(uri)
+  const { username, password } = req.body;
+  const userDoc = await User.findOne({ username });
+  const passOk = bcrypt.compareSync(password, userDoc.password);
+  if (passOk) {
+    // logged in
+    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
+      if (err) throw err;
       res.cookie('token', token).json({
         id: userDoc._id,
         username,
         profilePicture: userDoc.profilePicture // agrega la propiedad profilePicture a la respuesta
+
       });
-    } else {
-      res.status(400).json('Wrong password');
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json('Internal server error');
+    });
+  } else {
+    res.status(400).json('wrong credentials');
   }
 });
+
 
 
 
