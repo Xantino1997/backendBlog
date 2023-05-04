@@ -156,7 +156,8 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  mongoose.connect(uri)
+  mongoose.connect(uri);
+  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
