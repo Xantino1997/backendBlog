@@ -28,7 +28,7 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 app.use(cors({
   credentials: true,
-  origin: true,
+  origin: "https://blog3-eta.vercel.app",
   methods: ['GET', 'POST', 'PUT'],
 
 }));
