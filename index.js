@@ -30,6 +30,7 @@ app.use(cors({
   credentials: true,
   origin: 'https://blog3-eta.vercel.app',
   methods: ['GET', 'POST', 'PUT'],
+
 }));
 
 app.use(express.json());
@@ -65,7 +66,6 @@ mongoose.connect(uri, {
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   const { username, password } = req.body;
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
@@ -88,7 +88,6 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
 
 
 app.post('/login', async (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
   const passOk = bcrypt.compareSync(password, userDoc.password);
@@ -113,7 +112,6 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/profile', (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   const { token } = req.cookies;
   if (!token) {
     return res.status(401).json({ message: 'No se proporcionó un token' });
@@ -131,12 +129,10 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.cookie('token', '').json('ok');
 });
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
@@ -161,7 +157,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -198,7 +193,6 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.get('/post', async (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.json(
     await Post.find()
       .populate('author', ['username'])
@@ -208,7 +202,6 @@ app.get('/post', async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   const { id } = req.params;
   const postDoc = await Post.findById(id).populate('author', ['username']);
   res.json(postDoc);
