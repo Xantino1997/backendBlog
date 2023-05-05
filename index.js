@@ -38,12 +38,6 @@ app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
 
-app.post("/test", (req, res) => {
-  const { username } = req.body;
-  res.status(200).send({ msg: `${username}, Welcome to the life` })
-  // alert(username);
-})
-
 
 
 
