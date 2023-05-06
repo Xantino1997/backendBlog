@@ -46,7 +46,6 @@ app.options('/post', (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.status(200).send();
   next();
-
 });
 
 
