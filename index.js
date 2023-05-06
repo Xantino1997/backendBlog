@@ -33,6 +33,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -129,12 +130,10 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.header('Access-Control-Allow-Origin', "https://blog3-eta.vercel.app");
   res.cookie('token', '').json('ok');
 });
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.header('Access-Control-Allow-Origin', "https://blog3-eta.vercel.app");
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
@@ -159,7 +158,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.header('Access-Control-Allow-Origin', "https://blog3-eta.vercel.app");
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -196,7 +194,6 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.get('/post', async (req, res) => {
-
   res.json(
     await Post.find()
       .populate('author', ['username'])
