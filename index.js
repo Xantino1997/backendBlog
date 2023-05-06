@@ -26,11 +26,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-app.use(cors({
-  credentials: true,
-  origin: "https://blog3-eta.vercel.app",
-  methods: ['get', 'post', 'put'],
-
+apapp.use(cors({
+  origin: 'https://blog3-eta.vercel.app',
+  methods: ['POST', 'PUT', 'GET'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -196,7 +195,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.get('/post', async (req, res) => {
-  
+
   res.json(
     await Post.find()
       .populate('author', ['username'])
