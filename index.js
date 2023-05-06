@@ -27,6 +27,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 apapp.use(cors({
+  credentials: true,
   origin: 'https://blog3-eta.vercel.app',
   methods: ['POST', 'PUT', 'GET'],
   allowedHeaders: ['Content-Type', 'Authorization']
