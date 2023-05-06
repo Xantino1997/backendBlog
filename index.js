@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 
 
 
-// con paquete cors
+// con el  paquete cors
 
 // app.use(cors({
 //   origin: 'https://blog3-eta.vercel.app',
