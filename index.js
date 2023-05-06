@@ -27,6 +27,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 app.use((req, res, next) => {
+  console.log('Request:', req); // Agregar esta línea
   res.setHeader("Access-Control-Allow-Origin", "https://blog3-eta.vercel.app");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
+
 
 app.use(express.json());
 app.use(cookieParser());
