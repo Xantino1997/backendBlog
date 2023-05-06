@@ -39,15 +39,6 @@ app.use((req, res, next) => {
 });
 
 
-app.options('/post', (req, res) => {
-  console.log('Request:', req); // Agregar esta línea
-
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.status(200).send();
-  next();
-
-});
 
 
 
