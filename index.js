@@ -30,7 +30,7 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 // sin paquete cors
 app.use((req, res, next) => {
   console.log('Request:', req);
-  res.setHeader("Access-Control-Allow-Origin", "https://blog3-eta.vercel.app, https://backendblog-production.up.railway.app");
+  res.setHeader("Access-Control-Allow-Origin", "https://blog3-eta.vercel.app");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE, OPTIONS"
