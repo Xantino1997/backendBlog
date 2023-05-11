@@ -21,24 +21,23 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors())
 
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 
 // sin paquete cors
-// app.use((req, res, next) => {
-//   console.log('Request:', req);
-//   res.setHeader("Access-Control-Allow-Origin", "https://sentidos-blog.vercel.app");
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-//   );
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   res.setHeader('Access-Control-Allow-Credentials', 'true');
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log('Request:', req);
+  res.setHeader("Access-Control-Allow-Origin", "https://sentidos-blog.vercel.app");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
