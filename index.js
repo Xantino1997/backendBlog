@@ -29,7 +29,7 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 // sin paquete cors
 app.use((req, res, next) => {
   console.log('Request:', req);
-  res.setHeader("Access-Control-Allow-Origin", "https://sentidos-blog.vercel.app/client");
+  res.setHeader("Access-Control-Allow-Origin", "https://sentidos-blog.vercel.app/client/");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE, OPTIONS"
