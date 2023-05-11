@@ -109,15 +109,8 @@ app.post('/login', async (req, res) => {
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
     // logged in
-    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-      if (err) throw err;
-      res.cookie('token', token).json({
-        id: userDoc._id,
-        username,
-        profilePicture: userDoc.profilePicture // agrega la propiedad profilePicture a la respuesta
-
-      });
-    });
+    res.status(400).json('wrong credentials');
+   
   } else {
     res.status(400).json('wrong credentials');
   }
@@ -128,6 +121,7 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/profile', (req, res) => {
+
   const { token } = req.cookies;
   if (!token) {
     return res.status(401).json({ message: 'No se proporcionó un token' });
@@ -179,7 +173,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('/api/post', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'PUT');
 
