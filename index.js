@@ -83,7 +83,7 @@ mongoose.connect(uri, {
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app/client/');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   const { username, password } = req.body;
   const { originalname, path } = req.file;
@@ -107,7 +107,7 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
 
 
 app.post('/login', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app/client/');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
 
   const { username, password } = req.body;
@@ -151,7 +151,7 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app/client/');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.cookie('token', '').json('ok');
 });
