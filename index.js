@@ -77,7 +77,7 @@ mongoose.connect(uri, {
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
 
   const { username, password } = req.body;
@@ -102,7 +102,7 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
 
 
 app.post('/login', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   
   const { username, password } = req.body;
@@ -129,7 +129,7 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/profile', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   
   const { token } = req.cookies;
@@ -149,14 +149,14 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   
   res.cookie('token', '').json('ok');
 });
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   
   const { originalname, path } = req.file;
@@ -186,7 +186,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'PUT');
 
   let newPath = null;
@@ -226,8 +226,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.get('/post', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'PUT');
+ 
   
   res.json(
     await Post.find()
@@ -238,9 +237,7 @@ app.get('/post', async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'PUT');
-  
+
   const { id } = req.params;
   const postDoc = await Post.findById(id).populate('author', ['username']);
   res.json(postDoc);
