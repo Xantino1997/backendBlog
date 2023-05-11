@@ -40,14 +40,14 @@ app.use((req, res, next) => {
   next();
 });
 
-const { createProxyMiddleware } = require('http-proxy-middleware');
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const apiProxy = createProxyMiddleware({
-  target: 'https://backendblog-production.up.railway.app',
-  changeOrigin: true,
-});
+// const apiProxy = createProxyMiddleware({
+//   target: 'https://backendblog-production.up.railway.app',
+//   changeOrigin: true,
+// });
 
-app.use('/post', apiProxy);
+// app.use('/post', apiProxy);
 
 // con el  paquete cors
 
