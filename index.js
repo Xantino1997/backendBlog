@@ -76,7 +76,7 @@ mongoose.connect(uri, {
 
 
 
-app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
+app.post('api/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
 
@@ -101,7 +101,7 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
 
 
 
-app.post('/login', async (req, res) => {
+app.post('api/login', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   
@@ -128,7 +128,7 @@ app.post('/login', async (req, res) => {
 
 
 
-app.get('/profile', (req, res) => {
+app.get('api/profile', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   
@@ -148,14 +148,14 @@ app.get('/profile', (req, res) => {
 
 
 
-app.post('/logout', (req, res) => {
+app.post('api/logout', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   
   res.cookie('token', '').json('ok');
 });
 
-app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+app.post('api/post', uploadMiddleware.single('file'), async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   
@@ -185,7 +185,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/api/post', uploadMiddleware.single('file'), async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'PUT');
 
