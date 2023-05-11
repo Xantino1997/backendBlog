@@ -109,8 +109,14 @@ app.post('/login', async (req, res) => {
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
     // logged in
-    res.status(400).json('wrong credentials');
-   
+    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
+      if (err) throw err;
+      res.cookie('token', token).json({
+        id: userDoc._id,
+        username,
+        profilePicture: userDoc.profilePicture // agrega la propiedad profilePicture a la respuesta
+      });
+    });
   } else {
     res.status(400).json('wrong credentials');
   }
