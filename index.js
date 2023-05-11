@@ -30,7 +30,7 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 // sin paquete cors
 app.use((req, res, next) => {
   console.log('Request:', req);
-  res.setHeader("Access-Control-Allow-Origin", "https://blog3-eta.vercel.app");
+  res.setHeader("Access-Control-Allow-Origin", "https://sentidos-blog.vercel.app");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE, OPTIONS"
@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 // con el  paquete cors
 
 // app.use(cors({
-//   origin: 'https://blog3-eta.vercel.app',
+//   origin: 'https://sentidos-blog.vercel.app',
 //   methods: ['POST', 'PUT', 'GET'],
 //   allowedHeaders: ['Content-Type', 'Authorization']
 // }));
@@ -77,7 +77,7 @@ mongoose.connect(uri, {
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   const { username, password } = req.body;
   const { originalname, path } = req.file;
@@ -101,7 +101,7 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
 
 
 app.post('/login', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
 
   const { username, password } = req.body;
@@ -145,13 +145,13 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.cookie('token', '').json('ok');
 });
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
 
   const { originalname, path } = req.file;
@@ -180,7 +180,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'PUT');
 
   let newPath = null;
