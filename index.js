@@ -40,7 +40,14 @@ app.use((req, res, next) => {
   next();
 });
 
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
+const apiProxy = createProxyMiddleware({
+  target: 'https://backendblog-production.up.railway.app',
+  changeOrigin: true,
+});
+
+app.use('/post', apiProxy);
 
 // con el  paquete cors
 
@@ -179,7 +186,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'PUT');
 
