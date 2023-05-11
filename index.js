@@ -77,6 +77,8 @@ mongoose.connect(uri, {
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
   const { username, password } = req.body;
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
@@ -99,6 +101,9 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
 
 
 app.post('/login', async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
   const passOk = bcrypt.compareSync(password, userDoc.password);
@@ -140,10 +145,15 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.cookie('token', '').json('ok');
 });
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://blog3-eta.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
