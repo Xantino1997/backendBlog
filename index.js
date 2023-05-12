@@ -8,7 +8,12 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-const uploadMiddleware = multer({ dest: 'uploads/' });
+const uploadMiddleware = multer({
+  dest: 'uploads/',
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10 megabytes
+  }
+});
 const fs = require('fs');
 const dotenv = require('dotenv').config();
 
@@ -185,7 +190,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   // Configurar los encabezados CORS
   res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'PUT');
