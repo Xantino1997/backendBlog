@@ -185,27 +185,26 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('/posts', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
+  // Configurar los encabezados CORS
   res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'PUT');
 
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
-    const parts = originalname.split('.');
-    const ext = parts[parts.length - 1];
-    newPath = path + '.' + ext;
+    const ext = originalname.split('.').pop(); // Obtener la extensión del archivo
+    newPath = `${path}.${ext}`; // Agregar la extensión al final de la ruta del archivo
     fs.renameSync(path, newPath);
   }
 
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
+  try {
     const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
-    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info._id);
     if (!isAuthor) {
-      return res.status(400).json('you are not the author');
+      return res.status(400).json({ message: 'you are not the author' });
     }
     await postDoc.update({
       title,
@@ -214,9 +213,11 @@ app.put('/posts', uploadMiddleware.single('file'), async (req, res) => {
       cover: newPath ? newPath : postDoc.cover,
     });
 
-    res.json(postDoc);
-  });
-
+    res.status(204).end(); // Devolver un código de estado 204 (sin contenido)
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'server error' });
+  }
 });
 
 
