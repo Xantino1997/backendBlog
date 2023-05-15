@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-
+app.use(cors({credentials:true,origin:'https://sentidos-blog.vercel.app'}));
 // sin paquete cors 
 
 app.use(function(req, res, next) {
