@@ -32,17 +32,13 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 
 // sin paquete cors
-app.use((req, res, next) => {
-  console.log('Request:', req);
-  res.setHeader("Access-Control-Allow-Origin", "https://sentidos-blog.vercel.app");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
+
 
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
