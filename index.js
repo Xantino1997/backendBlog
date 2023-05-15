@@ -172,13 +172,12 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
-    const { title, summary, content, profileAvatar } = req.body;
+    const { title, summary, content } = req.body;
     const postDoc = await Post.create({
       title,
       summary,
       content,
       cover: newPath,
-      profilePicture: profileAvatar,
       author: info.id,
     });
     res.json(postDoc);
@@ -187,7 +186,9 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 
-app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
+
+
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   // Configurar los encabezados CORS
   res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'PUT');
