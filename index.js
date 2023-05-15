@@ -17,7 +17,7 @@ const uploadMiddleware = multer({
 const fs = require('fs');
 const dotenv = require('dotenv').config();
 
-const port = process.env.PORT;
+const port = process.env.REACT_APP_PORT || 4000;
 const uri = process.env.REACT_APP_URI
 
 const bodyParser = require('body-parser');
