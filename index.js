@@ -3,17 +3,23 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 const User = require('./models/User');
 const Post = require('./models/Post');
+const Suscriptor = require('./models/Suscribe');
 const bcrypt = require('bcryptjs');
 const app = express();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
+const nodemailer = require('nodemailer');
+const path = require('path');
+
+
 const uploadMiddleware = multer({
   dest: 'uploads/',
   limits: {
     fileSize: 10 * 1024 * 1024 // 10 megabytes
   }
 });
+
 const fs = require('fs');
 const dotenv = require('dotenv').config();
 
@@ -23,17 +29,19 @@ const uri = process.env.REACT_APP_URI
 const bodyParser = require('body-parser');
 
 // Usar body-parser para procesar los datos en el cuerpo de las solicitudes entrantes
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const jsonParser = bodyParser.json({ limit: '50mb' });
+const urlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: true });
 
+// utilizar los analizadores de cuerpo en la aplicación
+app.use(jsonParser);
+app.use(urlencodedParser);
 
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-app.use(cors({credentials:true,origin:'https://sentidos-blog.vercel.app'}));
-// sin paquete cors 
-
-app.use(function(req, res, next) {
+// app.use(cors({credentials:true,origin:'https://sentidos-blog.vercel.app'}));
+// sin paquete cors
+app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -42,14 +50,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-// const { createProxyMiddleware } = require('http-proxy-middleware');
 
-// const apiProxy = createProxyMiddleware({
-//   target: 'https://backendblog-production.up.railway.app',
-//   changeOrigin: true,
-// });
 
-// app.use('/post', apiProxy);
 
 // con el  paquete cors
 
@@ -86,8 +88,7 @@ mongoose.connect(uri, {
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
+
   const { username, password } = req.body;
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
@@ -106,6 +107,92 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
     res.status(400).json(e);
   }
 });
+
+// Configurar el transporte de correo electrónico
+const config = {
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'sentidospadres@gmail.com',
+    pass: process.env.PASS_FOR_MAIL
+  },
+}
+const transport = nodemailer.createTransport(config);
+let lastSubscriberId = 0;
+
+app.post('/suscriptores', async (req, res) => {
+  const { name, email } = req.body;
+
+  try {
+    if (!email) {
+      return res.status(400).json({ error: 'El correo electrónico no puede ser nulo' });
+    }
+
+    const existingSubscriber = await Suscriptor.findOne({ email });
+
+
+    if (existingSubscriber) {
+      return res.status(400).json({ error: 'El suscriptor ya existe' });
+    }
+
+    const newSuscriptor = new Suscriptor({ name, email });
+
+    // Incrementar el lastSubscriberId antes de guardar
+    lastSubscriberId++;
+    newSuscriptor.id = lastSubscriberId;
+
+    await newSuscriptor.save();
+
+    const wts = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/800px-WhatsApp.svg.png";
+    const fb = "https://img.freepik.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?w=360";
+    const inst = "https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-facebook-social-media-icon-png-image_6315968.png";
+   
+    const sentidos = "https://igtrigo.com/wp-content/uploads/2018/11/labio-leporino-y-paladar-hendido.jpg";
+    const year = new Date().getFullYear();
+    
+    const mailOptions = {
+      from: 'sentidospadres@gmail.com',
+      to: email,
+      subject: 'Gracias por suscribirte al Post de Sentidos Padres',
+      html: `
+        <p>¡Hola <b>${name}<b>!</p>
+        <p>Gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
+        <p>Visita nuestra web: <a href="https://sentidos-blog.vercel.app/"><b>https://sentidos-blog.vercel.app/<b></a></p>
+    
+        <p>O ingresa a nuestras redes : 😎
+          <footer>
+            <div className="footer-content">
+              <div><img className="titulo-footer" src="${sentidos}" style="width: 300px; height: 150px;" alt="Sentidos"></div>
+              <h2>Estamos felices de tenerte</h2>
+              <div className="footer-social">
+                <h4>Nuestras Redes</h4>
+                <a className="footer-whatsapp" href="https://www.whatsapp.com" target="_blank"><img className="footer-whatsapp" src="${wts}" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
+                <a className="footer-instagram" href="https://www.instagram.com" target="_blank"><img className="footer-instagram" src="${inst}" alt="Instagram" style="width: 50px; height: 50px;" /></a>
+                <a className="footer-facebook" href="https://www.facebook.com/SentidosAsociacion/" target="_blank"><img className="footer-facebook" src="${fb}" alt="Facebook" style="width: 50px; height: 50px;" /></a>
+              </div>
+            </div> 
+            <p className="copy">&copy; ${year} <b>Sentidos</b></p>
+          </footer>
+      `
+    };
+    
+
+    transport.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Error al enviar el correo electrónico' });
+      } else {
+        res.status(200).json({ message: 'Suscriptor agregado correctamente' });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  }
+});
+
+
 
 
 
@@ -159,6 +246,7 @@ app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
 });
 
+
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
@@ -172,12 +260,13 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
-    const { title, summary, content } = req.body;
+    const { title, summary, content, profileAvatar } = req.body;
     const postDoc = await Post.create({
       title,
       summary,
       content,
       cover: newPath,
+      profilePicture: profileAvatar,
       author: info.id,
     });
     res.json(postDoc);
@@ -189,25 +278,23 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  // Configurar los encabezados CORS
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'PUT');
-
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
-    const ext = originalname.split('.').pop(); // Obtener la extensión del archivo
-    newPath = `${path}.${ext}`; // Agregar la extensión al final de la ruta del archivo
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    newPath = path + '.' + ext;
     fs.renameSync(path, newPath);
   }
 
   const { token } = req.cookies;
-  try {
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
     const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
     if (!isAuthor) {
-      return res.status(400).json({ message: 'you are not the author' });
+      return res.status(400).json('you are not the author');
     }
     await postDoc.update({
       title,
@@ -216,13 +303,10 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       cover: newPath ? newPath : postDoc.cover,
     });
 
-    res.status(204).end(); // Devolver un código de estado 204 (sin contenido)
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'server error' });
-  }
-});
+    res.json(postDoc);
+  });
 
+});
 
 
 
