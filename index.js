@@ -42,7 +42,7 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 // app.use(cors({credentials:true,origin:'https://sentidos-blog.vercel.app'}));
 // sin paquete cors
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
+  res.header('Access-Control-Allow-Origin', 'https://sentidos.vercel.app');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
@@ -197,8 +197,6 @@ app.post('/suscriptores', async (req, res) => {
 
 
 app.post('/login', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
 
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
@@ -241,15 +239,11 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.cookie('token', '').json('ok');
 });
 
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
 
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
