@@ -39,6 +39,9 @@ app.use(urlencodedParser);
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
+// app.use(cors({credentials:true,origin:'https://sentidos.vercel.app/'}));
+// sin paquete cors
+// const cors = require('cors');
 
 app.use(cors({
   origin: 'https://sentidos.vercel.app',
@@ -47,6 +50,26 @@ app.use(cors({
   credentials: true
 }));
 
+
+
+// index.js
+
+// module.exports = (req, res) => {
+//   const message = "Hola, mundo estamos aqui por decir que si";
+//   const json = { message };
+
+//   res.status(200).json(json);
+// };
+
+
+
+// con el  paquete cors
+
+// app.use(cors({
+//   origin: 'https://sentidos.vercel.app/',
+//   methods: ['POST', 'PUT', 'GET'],
+//   allowedHeaders: ['Content-Type', 'Authorization']
+// }));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -99,7 +122,7 @@ const config = {
 const transport = nodemailer.createTransport(config);
 let lastSubscriberId = 0;
 
-app.post('/suscriptors', async (req, res) => {
+app.post('/suscriptor', async (req, res) => {
   const { name, email } = req.body;
 
   try {
