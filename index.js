@@ -41,14 +41,15 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 // app.use(cors({credentials:true,origin:'https://sentidos.vercel.app/'}));
 // sin paquete cors
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'https://sentidos.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Credentials', 'true');
+// const cors = require('cors');
 
-  next();
-});
+app.use(cors({
+  origin: 'https://sentidos.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+  credentials: true
+}));
+
 
 
 // index.js
