@@ -121,7 +121,7 @@ const config = {
 const transport = nodemailer.createTransport(config);
 let lastSubscriberId = 0;
 
-app.post('/suscriptores', async (req, res) => {
+app.post('/suscriptors', async (req, res) => {
   const { name, email } = req.body;
 
   try {
