@@ -83,113 +83,6 @@ mongoose.connect(uri, {
 
 
 
-// app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-
-//   const { username, password } = req.body;
-//   const { originalname, path } = req.file;
-//   const parts = originalname.split('.');
-//   const ext = parts[parts.length - 1];
-//   const newPath = path + '.' + ext;
-//   fs.renameSync(path, newPath);
-//   try {
-//     const userDoc = await User.create({
-//       username,
-//       password: bcrypt.hashSync(password, salt),
-//       profilePicture: newPath,
-//     });
-//     res.json(userDoc);
-//   } catch (e) {
-//     console.log(e);
-//     res.status(400).json(e);
-//   }
-// });
-
-// // Configurar el transporte de correo electrónico
-// const config = {
-//   host: 'smtp.gmail.com',
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: 'sentidospadres@gmail.com',
-//     pass: process.env.PASS_FOR_MAIL
-//   },
-// }
-// const transport = nodemailer.createTransport(config);
-// let lastSubscriberId = 0;
-
-// app.post('/suscriptores', async (req, res) => {
-//   const { name, email } = req.body;
-
-//   try {
-//     if (!email) {
-//       return res.status(400).json({ error: 'El correo electrónico no puede ser nulo' });
-//     }
-
-//     const existingSubscriber = await Suscriptor.findOne({ email });
-
-
-//     if (existingSubscriber) {
-//       return res.status(400).json({ error: 'El suscriptor ya existe' });
-//     }
-
-//     const newSuscriptor = new Suscriptor({ name, email });
-
-//     // Incrementar el lastSubscriberId antes de guardar
-//     lastSubscriberId++;
-//     newSuscriptor.id = lastSubscriberId;
-
-//     await newSuscriptor.save();
-
-//     const wts = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/800px-WhatsApp.svg.png";
-//     const fb = "https://img.freepik.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?w=360";
-//     const inst = "https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-facebook-social-media-icon-png-image_6315968.png";
-   
-//     const sentidos = "https://igtrigo.com/wp-content/uploads/2018/11/labio-leporino-y-paladar-hendido.jpg";
-//     const year = new Date().getFullYear();
-    
-//     const mailOptions = {
-//       from: 'sentidospadres@gmail.com',
-//       to: email,
-//       subject: 'Gracias por suscribirte al Post de Sentidos Padres',
-//       html: `
-//         <p>¡Hola <b>${name}<b>!</p>
-//         <p>Gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
-//         <p>Visita nuestra web: <a href="https://sentidos-blog.vercel.app/"><b>https://sentidos-blog.vercel.app/<b></a></p>
-    
-//         <p>O ingresa a nuestras redes : 😎
-//           <footer>
-//             <div className="footer-content">
-//               <div><img className="titulo-footer" src="${sentidos}" style="width: 300px; height: 150px;" alt="Sentidos"></div>
-//               <h2>Estamos felices de tenerte</h2>
-//               <div className="footer-social">
-//                 <h4>Nuestras Redes</h4>
-//                 <a className="footer-whatsapp" href="https://www.whatsapp.com" target="_blank"><img className="footer-whatsapp" src="${wts}" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
-//                 <a className="footer-instagram" href="https://www.instagram.com" target="_blank"><img className="footer-instagram" src="${inst}" alt="Instagram" style="width: 50px; height: 50px;" /></a>
-//                 <a className="footer-facebook" href="https://www.facebook.com/SentidosAsociacion/" target="_blank"><img className="footer-facebook" src="${fb}" alt="Facebook" style="width: 50px; height: 50px;" /></a>
-//               </div>
-//             </div> 
-//             <p className="copy">&copy; ${year} <b>Sentidos</b></p>
-//           </footer>
-//       `
-//     };
-    
-
-//     transport.sendMail(mailOptions, (error, info) => {
-//       if (error) {
-//         console.log(error);
-//         res.status(500).json({ error: 'Error al enviar el correo electrónico' });
-//       } else {
-//         res.status(200).json({ message: 'Suscriptor agregado correctamente' });
-//       }
-//     });
-//   } catch (e) {
-//     console.log(e);
-//     res.status(500).json({ error: 'Error al procesar la solicitud' });
-//   }
-// });
-
-
-
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
 
   const { username, password } = req.body;
@@ -248,18 +141,18 @@ app.post('/suscriptores', async (req, res) => {
     await newSuscriptor.save();
 
     const wts = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/800px-WhatsApp.svg.png";
-    const inst = "https://img.freepik.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?w=360";
-    const fb = "https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-facebook-social-media-icon-png-image_6315968.png";
-
+    const fb = "https://img.freepik.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?w=360";
+    const inst = "https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-facebook-social-media-icon-png-image_6315968.png";
+   
     const sentidos = "https://igtrigo.com/wp-content/uploads/2018/11/labio-leporino-y-paladar-hendido.jpg";
     const year = new Date().getFullYear();
-
+    
     const mailOptions = {
       from: 'sentidospadres@gmail.com',
       to: email,
       subject: 'Gracias por suscribirte al Post de Sentidos Padres',
       html: `
-        <p>¡Hola <b>${name}, como estas?<b>!</p>
+        <p>¡Hola <b>${name}<b>!</p>
         <p>Gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
         <p>Visita nuestra web: <a href="https://sentidos-blog.vercel.app/"><b>https://sentidos-blog.vercel.app/<b></a></p>
     
@@ -270,8 +163,7 @@ app.post('/suscriptores', async (req, res) => {
               <h2>Estamos felices de tenerte</h2>
               <div className="footer-social">
                 <h4>Nuestras Redes</h4>
-                <a className="footer-whatsapp" href="https://api.whatsapp.com/send?phone=543462529718&text=Hola%20me%20encontré%20con%20esta%20página%20y%20quería%20recibir%20información%20sobre%20Sentidos" target="_blank">
-               <img className="footer-whatsapp" src="${wts}" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
+                <a className="footer-whatsapp" href="https://www.whatsapp.com" target="_blank"><img className="footer-whatsapp" src="${wts}" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
                 <a className="footer-instagram" href="https://www.instagram.com" target="_blank"><img className="footer-instagram" src="${inst}" alt="Instagram" style="width: 50px; height: 50px;" /></a>
                 <a className="footer-facebook" href="https://www.facebook.com/SentidosAsociacion/" target="_blank"><img className="footer-facebook" src="${fb}" alt="Facebook" style="width: 50px; height: 50px;" /></a>
               </div>
@@ -280,6 +172,114 @@ app.post('/suscriptores', async (req, res) => {
           </footer>
       `
     };
+    
+
+    transport.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Error al enviar el correo electrónico' });
+      } else {
+        res.status(200).json({ message: 'Suscriptor agregado correctamente' });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: 'Error al procesar la solicitud' });
+  }
+});
+
+
+
+// app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
+
+//   const { username, password } = req.body;
+//   const { originalname, path } = req.file;
+//   const parts = originalname.split('.');
+//   const ext = parts[parts.length - 1];
+//   const newPath = path + '.' + ext;
+//   fs.renameSync(path, newPath);
+//   try {
+//     const userDoc = await User.create({
+//       username,
+//       password: bcrypt.hashSync(password, salt),
+//       profilePicture: newPath,
+//     });
+//     res.json(userDoc);
+//   } catch (e) {
+//     console.log(e);
+//     res.status(400).json(e);
+//   }
+// });
+
+// // Configurar el transporte de correo electrónico
+// const config = {
+//   host: 'smtp.gmail.com',
+//   port: 587,
+//   secure: false,
+//   auth: {
+//     user: 'sentidospadres@gmail.com',
+//     pass: process.env.PASS_FOR_MAIL
+//   },
+// }
+// const transport = nodemailer.createTransport(config);
+// let lastSubscriberId = 0;
+
+// app.post('/suscriptores', async (req, res) => {
+//   const { name, email } = req.body;
+
+//   try {
+//     if (!email) {
+//       return res.status(400).json({ error: 'El correo electrónico no puede ser nulo' });
+//     }
+
+//     const existingSubscriber = await Suscriptor.findOne({ email });
+
+
+//     if (existingSubscriber) {
+//       return res.status(400).json({ error: 'El suscriptor ya existe' });
+//     }
+
+//     const newSuscriptor = new Suscriptor({ name, email });
+
+//     // Incrementar el lastSubscriberId antes de guardar
+//     lastSubscriberId++;
+//     newSuscriptor.id = lastSubscriberId;
+
+//     await newSuscriptor.save();
+
+//     const wts = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/800px-WhatsApp.svg.png";
+//     const inst = "https://img.freepik.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?w=360";
+//     const fb = "https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-facebook-social-media-icon-png-image_6315968.png";
+
+//     const sentidos = "https://igtrigo.com/wp-content/uploads/2018/11/labio-leporino-y-paladar-hendido.jpg";
+//     const year = new Date().getFullYear();
+
+//     const mailOptions = {
+//       from: 'sentidospadres@gmail.com',
+//       to: email,
+//       subject: 'Gracias por suscribirte al Post de Sentidos Padres',
+//       html: `
+//         <p>¡Hola <b>${name}, como estas?<b>!</p>
+//         <p>Gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
+//         <p>Visita nuestra web: <a href="https://sentidos-blog.vercel.app/"><b>https://sentidos-blog.vercel.app/<b></a></p>
+    
+//         <p>O ingresa a nuestras redes : 😎
+//           <footer>
+//             <div className="footer-content">
+//               <div><img className="titulo-footer" src="${sentidos}" style="width: 300px; height: 150px;" alt="Sentidos"></div>
+//               <h2>Estamos felices de tenerte</h2>
+//               <div className="footer-social">
+//                 <h4>Nuestras Redes</h4>
+//                 <a className="footer-whatsapp" href="https://api.whatsapp.com/send?phone=543462529718&text=Hola%20me%20encontré%20con%20esta%20página%20y%20quería%20recibir%20información%20sobre%20Sentidos" target="_blank">
+//                <img className="footer-whatsapp" src="${wts}" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
+//                 <a className="footer-instagram" href="https://www.instagram.com" target="_blank"><img className="footer-instagram" src="${inst}" alt="Instagram" style="width: 50px; height: 50px;" /></a>
+//                 <a className="footer-facebook" href="https://www.facebook.com/SentidosAsociacion/" target="_blank"><img className="footer-facebook" src="${fb}" alt="Facebook" style="width: 50px; height: 50px;" /></a>
+//               </div>
+//             </div> 
+//             <p className="copy">&copy; ${year} <b>Sentidos</b></p>
+//           </footer>
+//       `
+//     };
 
 
     transport.sendMail(mailOptions, (error, info) => {
@@ -348,35 +348,8 @@ app.post('/logout', (req, res) => {
 });
 
 
-// app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-
-//   const { originalname, path } = req.file;
-//   const parts = originalname.split('.');
-//   const ext = parts[parts.length - 1];
-//   const newPath = path + '.' + ext;
-//   fs.renameSync(path, newPath);
-
-//   const { token } = req.cookies;
-//   jwt.verify(token, secret, {}, async (err, info) => {
-//     if (err) throw err;
-//     const { title, summary, content, profileAvatar } = req.body;
-//     const postDoc = await Post.create({
-//       title,
-//       summary,
-//       content,
-//       cover: newPath,
-//       profilePicture: profileAvatar,
-//       author: info.id,
-//     });
-//     res.json(postDoc);
-//   });
-
-// });
-
-
-
-
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
@@ -395,38 +368,65 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
       profilePicture: profileAvatar,
       author: info.id,
     });
-
-    const subscribers = await Suscriptor.find({}, 'email');
-    // const titulo = title
-    for (const subscriber of subscribers) {
-      const subscriberEmail = subscriber.email;
-
-      // Enlace al post
-      const postId = postDoc._id; // Suponiendo que el ID del post se encuentra en el campo _id
-      const link = `https://sentidos.vercel.app/post/${postId}`;
-
-      // Envío del correo electrónico al suscriptor actual
-      const mailOptions = {
-        from: 'sentidospadres@gmail.com', // Tu dirección de correo electrónico
-        to: subscriberEmail,
-        subject: 'Nuevo post creado',
-        html: `Hola como estas?, queriamos contarte que se creo un nuevo post:<br><br>
-        <h2>Título: ${title}</h2><br>
-        Dale click en el siguiente enlace: <br></br><hr><button style="background-color: #66b3ff; color: white; font-weight: bold;border-radius:15px"><a href="${link}" style="color: white; text-decoration: none;">VER EL ARTÍCULO</a></button>`,
-
-      };
-
-      transport.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Correo enviado:', info.response);
-        }
-      });
-    }
     res.json(postDoc);
   });
+
 });
+
+
+
+
+// app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+//   const { originalname, path } = req.file;
+//   const parts = originalname.split('.');
+//   const ext = parts[parts.length - 1];
+//   const newPath = path + '.' + ext;
+//   fs.renameSync(path, newPath);
+
+//   const { token } = req.cookies;
+//   jwt.verify(token, secret, {}, async (err, info) => {
+//     if (err) throw err;
+//     const { title, summary, content, profileAvatar } = req.body;
+//     const postDoc = await Post.create({
+//       title,
+//       summary,
+//       content,
+//       cover: newPath,
+//       profilePicture: profileAvatar,
+//       author: info.id,
+//     });
+
+//     const subscribers = await Suscriptor.find({}, 'email');
+//     // const titulo = title
+//     for (const subscriber of subscribers) {
+//       const subscriberEmail = subscriber.email;
+
+//       // Enlace al post
+//       const postId = postDoc._id; // Suponiendo que el ID del post se encuentra en el campo _id
+//       const link = `https://sentidos.vercel.app/post/${postId}`;
+
+//       // Envío del correo electrónico al suscriptor actual
+//       const mailOptions = {
+//         from: 'sentidospadres@gmail.com', // Tu dirección de correo electrónico
+//         to: subscriberEmail,
+//         subject: 'Nuevo post creado',
+//         html: `Hola como estas?, queriamos contarte que se creo un nuevo post:<br><br>
+//         <h2>Título: ${title}</h2><br>
+//         Dale click en el siguiente enlace: <br></br><hr><button style="background-color: #66b3ff; color: white; font-weight: bold;border-radius:15px"><a href="${link}" style="color: white; text-decoration: none;">VER EL ARTÍCULO</a></button>`,
+
+//       };
+
+//       transport.sendMail(mailOptions, (error, info) => {
+//         if (error) {
+//           console.log(error);
+//         } else {
+//           console.log('Correo enviado:', info.response);
+//         }
+//       });
+//     }
+//     res.json(postDoc);
+//   });
+// });
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   let newPath = null;
