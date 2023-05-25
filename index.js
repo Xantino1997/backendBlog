@@ -115,7 +115,8 @@ const config = {
   secure: false,
   auth: {
     user: 'sentidospadres@gmail.com',
-    pass: process.env.PASS_FOR_MAIL
+    pass:"iescuoxwerackzdr"
+    //  process.env.PASS_FOR_MAIL
   },
 }
 const transport = nodemailer.createTransport(config);
