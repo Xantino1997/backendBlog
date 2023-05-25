@@ -120,7 +120,6 @@ const config = {
 }
 const transport = nodemailer.createTransport(config);
 let lastSubscriberId = 0;
-const jwt = require('jsonwebtoken');
 
 app.post('/suscriptors', async (req, res) => {
   const { name, email } = req.body;
@@ -131,6 +130,7 @@ app.post('/suscriptors', async (req, res) => {
     }
 
     const existingSubscriber = await Suscriptor.findOne({ email });
+
 
     if (existingSubscriber) {
       return res.status(400).json({ error: 'El suscriptor ya existe' });
@@ -144,12 +144,6 @@ app.post('/suscriptors', async (req, res) => {
 
     await newSuscriptor.save();
 
-    // Generar el token utilizando el ID del suscriptor
-    const token = jwt.sign({ id: newSuscriptor.id }, 'secret');
-
-    // Agregar el token al objeto del suscriptor
-    newSuscriptor.token = token;
-
     const wts = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/800px-WhatsApp.svg.png";
     const inst = "https://img.freepik.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?w=360";
     const fb = "https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-facebook-social-media-icon-png-image_6315968.png";
@@ -162,29 +156,28 @@ app.post('/suscriptors', async (req, res) => {
       to: email,
       subject: 'Gracias por suscribirte al Post de Sentidos Padres',
       html: `
-        <p>¡Hola <b>${name}, como estas?</b>!</p>
+        <p>¡Hola <b>${name}, como estas?<b>!</p>
         <p>Gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
-        <p>Para confirmar tu suscripción, haz clic en el siguiente enlace:</p>
-        <p><a href="https://sentidos-blog.vercel.app/confirmar-suscripcion?token=${token}">Confirmar Suscripción</a></p>
-        <p>Visita nuestra web: <a href="https://sentidos-blog.vercel.app/"><b>https://sentidos-blog.vercel.app/</b></a></p>
+        <p>Visita nuestra web: <a href="https://sentidos-blog.vercel.app/"><b>https://sentidos-blog.vercel.app/<b></a></p>
     
-        <p>O ingresa a nuestras redes 😎:</p>
-        <footer>
-          <div className="footer-content">
-            <div><img className="titulo-footer" src="${sentidos}" style="width: 300px; height: 150px;" alt="Sentidos"></div>
-            <h2>Estamos felices de tenerte</h2>
-            <div className="footer-social">
-              <h4>Nuestras Redes</h4>
-              <a className="footer-whatsapp" href="https://api.whatsapp.com/send?phone=543462529718&text=Hola%20me%20encontré%20con%20esta%20página%20y%20quería%20recibir%20información%20sobre%20Sentidos" target="_blank">
-                <img className="footer-whatsapp" src="${wts}" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
-              <a className="footer-instagram" href="https://www.instagram.com" target="_blank"><img className="footer-instagram" src="${inst}" alt="Instagram" style="width: 50px; height: 50px;" /></a>
-              <a className="footer-facebook" href="https://www.facebook.com/SentidosAsociacion/" target="_blank"><img className="footer-facebook" src="${fb}" alt="Facebook" style="width: 50px; height: 50px;" /></a>
-            </div>
-          </div> 
-          <p className="copy">&copy; ${year} <b>Sentidos</b></p>
-        </footer>
+        <p>O ingresa a nuestras redes : 😎
+          <footer>
+            <div className="footer-content">
+              <div><img className="titulo-footer" src="${sentidos}" style="width: 300px; height: 150px;" alt="Sentidos"></div>
+              <h2>Estamos felices de tenerte</h2>
+              <div className="footer-social">
+                <h4>Nuestras Redes</h4>
+                <a className="footer-whatsapp" href="https://api.whatsapp.com/send?phone=543462529718&text=Hola%20me%20encontré%20con%20esta%20página%20y%20quería%20recibir%20información%20sobre%20Sentidos" target="_blank">
+               <img className="footer-whatsapp" src="${wts}" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
+                <a className="footer-instagram" href="https://www.instagram.com" target="_blank"><img className="footer-instagram" src="${inst}" alt="Instagram" style="width: 50px; height: 50px;" /></a>
+                <a className="footer-facebook" href="https://www.facebook.com/SentidosAsociacion/" target="_blank"><img className="footer-facebook" src="${fb}" alt="Facebook" style="width: 50px; height: 50px;" /></a>
+              </div>
+            </div> 
+            <p className="copy">&copy; ${year} <b>Sentidos</b></p>
+          </footer>
       `
     };
+
 
     transport.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -199,6 +192,8 @@ app.post('/suscriptors', async (req, res) => {
     res.status(500).json({ error: 'Error al procesar la solicitud' });
   }
 });
+
+
 
 
 
