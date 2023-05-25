@@ -126,7 +126,7 @@ app.post('/suscriptor', async (req, res) => {
 
   try {
     if (!email) {
-      return res.status(400).json({ error: 'El correo electrónico no puede ser nulo' });
+      return res.status(400).json({ error: 'El email no puede ser nulo' });
     }
 
     const existingSubscriber = await Suscriptor.findOne({ email });
