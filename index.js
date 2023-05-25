@@ -51,26 +51,6 @@ app.use(cors({
 }));
 
 
-
-// index.js
-
-// module.exports = (req, res) => {
-//   const message = "Hola, mundo estamos aqui por decir que si";
-//   const json = { message };
-
-//   res.status(200).json(json);
-// };
-
-
-
-// con el  paquete cors
-
-// app.use(cors({
-//   origin: 'https://sentidos.vercel.app/',
-//   methods: ['POST', 'PUT', 'GET'],
-//   allowedHeaders: ['Content-Type', 'Authorization']
-// }));
-
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -122,7 +102,7 @@ const config = {
 const transport = nodemailer.createTransport(config);
 let lastSubscriberId = 0;
 
-app.post('/suscriptor', async (req, res) => {
+app.post('/suscriptors', async (req, res) => {
   const { name, email } = req.body;
 
   try {
