@@ -39,10 +39,10 @@ app.use(urlencodedParser);
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-// app.use(cors({credentials:true,origin:'https://sentidos-blog.vercel.app'}));
+// app.use(cors({credentials:true,origin:'https://sentidos.vercel.app'}));
 // sin paquete cors
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
+  res.header('Access-Control-Allow-Origin', 'https://sentidos.vercel.app');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
@@ -53,13 +53,6 @@ app.use(function (req, res, next) {
 
 
 
-// con el  paquete cors
-
-// app.use(cors({
-//   origin: 'https://sentidos-blog.vercel.app',
-//   methods: ['POST', 'PUT', 'GET'],
-//   allowedHeaders: ['Content-Type', 'Authorization']
-// }));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -158,7 +151,7 @@ app.post('/suscriptores', async (req, res) => {
       html: `
         <p>¡Hola <b>${name}<b>!</p>
         <p>Gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
-        <p>Visita nuestra web: <a href="https://sentidos-blog.vercel.app/"><b>https://sentidos-blog.vercel.app/<b></a></p>
+        <p>Visita nuestra web: <a href="https://sentidos.vercel.app/"><b>https://sentidos.vercel.app/<b></a></p>
     
         <p>O ingresa a nuestras redes : 😎
           <footer>
@@ -197,8 +190,6 @@ app.post('/suscriptores', async (req, res) => {
 
 
 app.post('/login', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
 
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
@@ -241,40 +232,64 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
+
   res.cookie('token', '').json('ok');
 });
 
 
-app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sentidos-blog.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
 
-  const { originalname, path } = req.file;
-  const parts = originalname.split('.');
-  const ext = parts[parts.length - 1];
-  const newPath = path + '.' + ext;
-  fs.renameSync(path, newPath);
-
-  const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
-    const { title, summary, content, profileAvatar } = req.body;
-    const postDoc = await Post.create({
-      title,
-      summary,
-      content,
-      cover: newPath,
-      profilePicture: profileAvatar,
-      author: info.id,
+  app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+    const { originalname, path } = req.file;
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newPath = path + '.' + ext;
+    fs.renameSync(path, newPath);
+  
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+      const { title, summary, content, profileAvatar } = req.body;
+      const postDoc = await Post.create({
+        title,
+        summary,
+        content,
+        cover: newPath,
+        profilePicture: profileAvatar,
+        author: info.id,
+      });
+  
+      const subscribers = await Suscriptor.find({}, 'email');
+      // const titulo = title
+      for (const subscriber of subscribers) {
+        const subscriberEmail = subscriber.email;
+  
+        // Enlace al post
+        const postId = postDoc._id; // Suponiendo que el ID del post se encuentra en el campo _id
+        const link = `https://sentidos.vercel.app/post/${postId}`;
+  
+        // Envío del correo electrónico al suscriptor actual
+        const mailOptions = {
+          from: 'sentidospadres@gmail.com', // Tu dirección de correo electrónico
+          to: subscriberEmail,
+          subject: 'Nuevo post creado',
+          html: `Hola como estas?, queriamos contarte que se creo un nuevo post:<br><br>
+          <h2>Título: ${title}</h2><br>
+          Dale click en el siguiente enlace: <br></br><hr><button style="background-color: #66b3ff; color: white; font-weight: bold;border-radius:15px"><a href="${link}" style="color: white; text-decoration: none;">VER EL ARTÍCULO</a></button>`,
+  
+        };
+  
+        transport.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Correo enviado:', info.response);
+          }
+        });
+      }
+      res.json(postDoc);
     });
-    res.json(postDoc);
   });
-
-});
-
-
+  
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
