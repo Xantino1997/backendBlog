@@ -74,10 +74,6 @@ mongoose.connect(uri, {
   console.log('Error al conectar a la base de datos:', error);
 });
 
-// app.post('/test', (req, res, next) => {
-//   res.json({ message: 'Hello world' });
-// });
-
 
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
@@ -186,9 +182,6 @@ app.post('/suscriptores', async (req, res) => {
 });
 
 
-
-
-
 app.post('/login', async (req, res) => {
 
   const { username, password } = req.body;
@@ -235,6 +228,9 @@ app.post('/logout', (req, res) => {
 
   res.cookie('token', '').json('ok');
 });
+
+
+
 
 
 
@@ -291,7 +287,6 @@ app.post('/logout', (req, res) => {
   });
   
 
-
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   let newPath = null;
   if (req.file) {
@@ -344,3 +339,23 @@ app.listen(port, () => {
   console.log('Runnig SERVER ' + port);
 });
 //
+
+
+
+
+// app.use(cors({credentials:true,origin:'https://sentidos.vercel.app/'}));
+// sin paquete cors
+// const cors = require('cors');
+
+// const corsOptions = {
+//   origin: '*',
+// };
+
+// app.use(cors(corsOptions));
+
+
+
+
+
+
+
