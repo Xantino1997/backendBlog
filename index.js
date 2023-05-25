@@ -43,15 +43,25 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 // sin paquete cors
 // const cors = require('cors');
 
-app.use(cors({
-  origin: 'https://sentidos.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
-  credentials: true
-}));
+// app.use(cors({
+//   origin: 'https://sentidos.vercel.app',
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+//   credentials: true
+// }));
+
+
+// app.use(express.json());
 
 
 app.use(express.json());
+app.use(cors({
+  origin: "https://sentidos.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
+  credentials: true
+}));
+
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
@@ -281,7 +291,8 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post/', uploadMiddleware.single('file'), async (req, res) => {
+  
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
