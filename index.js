@@ -39,11 +39,6 @@ app.use(urlencodedParser);
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-const httpProxy = require('http-proxy');
-
-const proxy = httpProxy.createProxyServer();
-
-
 
 app.use(cors({
   origin: 'https://sentidos.vercel.app',
@@ -97,7 +92,7 @@ const config = {
   secure: false,
   auth: {
     user: 'sentidospadres@gmail.com',
-    pass: "iescuoxwerackzdr"
+    pass:"iescuoxwerackzdr"
     //  process.env.PASS_FOR_MAIL
   },
 }
@@ -332,14 +327,7 @@ app.get('/post/:id', async (req, res) => {
 })
 
 
-// Configuración del servidor proxy
-app.all('/*', (req, res) => {
-  proxy.web(req, res, {
-    target: 'https://backend-blog-psi.vercel.app', // URL del backend real
-    changeOrigin: true, // Cambia el encabezado de origen en la solicitud
-    ignorePath: true, // Ignora la ruta actual y utiliza la ruta de destino original
-  });
-});
+
 
 app.listen(port, () => {
   console.log('Runnig SERVER ' + port);
