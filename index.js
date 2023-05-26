@@ -39,7 +39,7 @@ app.use(jsonParser);
 app.use(urlencodedParser);
 
 app.use(cors({
-  origin: "https://sentidos.vercel.app/",
+  origin: "https://sentidos.vercel.app",
   credentials: true
 }));
 
@@ -65,7 +65,7 @@ mongoose.connect(uri, {
 });
 
 
-app.post('register', uploadMiddleware.single('profilePicture'), async (req, res) => {
+app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
 
   const { username, password } = req.body;
   const { originalname, path } = req.file;
@@ -100,7 +100,7 @@ const config = {
 const transport = nodemailer.createTransport(config);
 let lastSubscriberId = 0;
 
-app.post('suscriptors', async (req, res) => {
+app.post('/suscriptors', async (req, res) => {
   const { name, email } = req.body;
 
   try {
@@ -176,7 +176,7 @@ app.post('suscriptors', async (req, res) => {
 
 
 
-app.post('login', async (req, res) => {
+app.post('/login', async (req, res) => {
 
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
@@ -200,7 +200,7 @@ app.post('login', async (req, res) => {
 
 
 
-app.get('profile', (req, res) => {
+app.get('/profile', (req, res) => {
 
   const { token } = req.cookies;
   if (!token) {
@@ -218,12 +218,12 @@ app.get('profile', (req, res) => {
 
 
 
-app.post('logout', (req, res) => {
+app.post('/logout', (req, res) => {
   res.cookie('token', '').json('ok');
 });
 
 
-app.get('post', async (req, res) => {
+app.get('/post', async (req, res) => {
   res.json(
     await Post.find()
       .populate('author', ['username'])
@@ -232,7 +232,7 @@ app.get('post', async (req, res) => {
   );
 });
 
-app.get('post/:id', async (req, res) => {
+app.get('/post/:id', async (req, res) => {
   const { id } = req.params;
   const postDoc = await Post.findById(id).populate('author', ['username']);
   res.json(postDoc);
@@ -244,7 +244,7 @@ app.get('post/:id', async (req, res) => {
 
 
 
-app.post('post', uploadMiddleware.single('file'), async (req, res) => {
+app.post('./post', uploadMiddleware.single('file'), async (req, res) => {
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
@@ -298,7 +298,7 @@ app.post('post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('post', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   try {
     let newPath = null;
     if (req.file) {
