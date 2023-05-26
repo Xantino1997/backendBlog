@@ -301,7 +301,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       cover: newPath ? newPath : postDoc.cover,
     });
 
-    res.header('Access-Control-Allow-Origin', '*'); // Agrega el encabezado CORS
+    res.header('Access-Control-Allow-Origin', 'https://sentidos.vercel.app'); // Agrega el encabezado CORS
     res.json(postDoc);
   });
 });
