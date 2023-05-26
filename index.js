@@ -322,7 +322,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     });
 
     // Configura el dominio y el alcance de las cookies en la respuesta
-    res.cookie('cookieName', 'cookieValue', { domain: 'https://backend-blog-psi.vercel.app', path: '/' });
+    res.cookie('cookieName', 'cookieValue', { domain: 'https://sentidos.vercel.app', path: '/' });
 
     res.json(postDoc);
   });
