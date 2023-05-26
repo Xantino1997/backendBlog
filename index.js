@@ -40,7 +40,7 @@ app.use(urlencodedParser);
 
 app.use(cors({
   origin: "https://sentidos.vercel.app",
-  credentials: 'include'
+  credentials: true
 }));
 
 const salt = bcrypt.genSaltSync(10);
