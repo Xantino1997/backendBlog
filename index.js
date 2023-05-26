@@ -43,7 +43,7 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 app.use(express.json());
 app.use(cors({
   origin: "https://sentidos.vercel.app",
-  // methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
   credentials: true
 }));
@@ -275,10 +275,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-
-
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -304,11 +301,10 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       cover: newPath ? newPath : postDoc.cover,
     });
 
+    res.header('Access-Control-Allow-Origin', '*'); // Agrega el encabezado CORS
     res.json(postDoc);
   });
-
 });
-
 
 
 app.get('/post', async (req, res) => {
