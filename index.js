@@ -258,7 +258,7 @@ app.get('/post/:id', async (req, res) => {
 
 
 
-app.post('./post', uploadMiddleware.single('file'), async (req, res) => {
+app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
   const ext = parts[parts.length - 1];
@@ -312,7 +312,7 @@ app.post('./post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post/id', uploadMiddleware.single('file'), async (req, res) => {
   try {
     let newPath = null;
     if (req.file) {
