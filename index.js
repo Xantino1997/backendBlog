@@ -91,7 +91,7 @@ const config = {
   secure: false,
   auth: {
     user: 'sentidospadres@gmail.com',
-    pass:"iescuoxwerackzdr"
+    pass: "iescuoxwerackzdr"
     //  process.env.PASS_FOR_MAIL
   },
 }
@@ -276,6 +276,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'https://sentidos.vercel.app'); // Agrega el encabezado CORS
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -300,8 +301,6 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       content,
       cover: newPath ? newPath : postDoc.cover,
     });
-
-    res.header('Access-Control-Allow-Origin', 'https://sentidos.vercel.app'); // Agrega el encabezado CORS
     res.json(postDoc);
   });
 });
