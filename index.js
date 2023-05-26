@@ -295,9 +295,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 
-
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
- 
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -322,11 +320,13 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       content,
       cover: newPath ? newPath : postDoc.cover,
     });
+
+    // Configura el dominio y el alcance de las cookies en la respuesta
+    res.cookie('cookieName', 'cookieValue', { domain: 'https://backend-blog-psi.vercel.app', path: '/' });
+
     res.json(postDoc);
   });
 });
-
-
 
 
 
