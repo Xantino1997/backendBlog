@@ -43,7 +43,7 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 app.use(express.json());
 app.use(cors({
   origin: "https://sentidos.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  // methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
   credentials: true
 }));
