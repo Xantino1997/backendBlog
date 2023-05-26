@@ -36,17 +36,17 @@ const urlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: true }
 app.use(jsonParser);
 app.use(urlencodedParser);
 
+app.use(cors({
+  origin: "https://sentidos.vercel.app",
+  credentials: true
+}));
+
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 
 app.use(express.json());
-app.use(cors({
-  origin: "https://sentidos.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
-  credentials: true
-}));
+
 
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -295,7 +295,9 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 
+
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+ 
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -320,13 +322,11 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       content,
       cover: newPath ? newPath : postDoc.cover,
     });
-
-    // Configura el dominio y el alcance de las cookies en la respuesta
-    res.cookie('token', 'secret', { domain: 'https://sentidos.vercel.app', path: '/' });
-
     res.json(postDoc);
   });
 });
+
+
 
 
 
