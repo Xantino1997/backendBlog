@@ -55,7 +55,12 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 
 app.use(express.json());
-app.use(cors('*'));
+app.use(cors({
+  origin: "https://sentidos.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
+  credentials: true
+}));
 
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
