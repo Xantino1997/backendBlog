@@ -38,6 +38,20 @@ const urlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: true }
 app.use(jsonParser);
 app.use(urlencodedParser);
 
+// sin cors
+
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', 'https://sentidos.vercel.app');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   res.setHeader('Access-Control-Allow-Credentials', 'true');
+//   next();
+// });
+
+
+
+
+// con cors
 app.use(cors({
   origin: "https://sentidos.vercel.app",
   credentials: true
@@ -298,7 +312,7 @@ app.post('./post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
   try {
     let newPath = null;
     if (req.file) {
