@@ -312,7 +312,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 
-app.put(`/post/${id}`, uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   try {
     let newPath = null;
     if (req.file) {
