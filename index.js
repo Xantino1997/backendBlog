@@ -255,7 +255,7 @@ app.get('/post/:id', async (req, res) => {
 
 
 
-
+// edit the post
 
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
