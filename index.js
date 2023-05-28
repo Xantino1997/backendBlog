@@ -20,7 +20,7 @@ const uploadMiddleware = multer({
   }
 });
 
-const fs = require('fs').promises;
+const fs = require('fs');
 
 const storageDirectory = 'uploads/';
 
@@ -35,7 +35,6 @@ fs.chmod(storageDirectory, 0o777)
 
 
 
-const fs = require('fs');
 const dotenv = require('dotenv').config();
 
 const port = process.env.PORT || 4000;
