@@ -285,7 +285,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 
-
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   try {
     let newPath = null;
@@ -304,7 +303,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       const postDoc = await Post.findById(id);
       const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
       if (!isAuthor) {
-        return res.status(400).json('you are not the author');
+        return res.status(400).json({ error: 'You are not the author' });
       }
       await postDoc.update({
         title,
@@ -315,11 +314,10 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       res.json(postDoc);
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'An error occurred in the backend' });
-    console.log(error +'An error occurred in the backend');
   }
 });
-
 
 
 
