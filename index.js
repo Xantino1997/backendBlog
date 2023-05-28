@@ -20,7 +20,6 @@ const uploadMiddleware = multer({
   }
 });
 
-const fs = require('fs');
 
 const fs = require('fs').promises;
 
