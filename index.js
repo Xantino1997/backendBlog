@@ -318,7 +318,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     res.json({ titles });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: 'An error occurred in the backend' });
+    res.status(500).json({ error: 'error occurred in the backend' });
   }
 });
 
