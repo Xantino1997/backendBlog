@@ -20,18 +20,19 @@ const uploadMiddleware = multer({
   }
 });
 
-const fs = require('fs');
+const fs = require('fs').promises;
 
 const storageDirectory = 'uploads/';
 
 // Asegurar los permisos del directorio de almacenamiento
-fs.chmod(storageDirectory, 0o777, (err) => {
-  if (err) {
+fs.chmod(storageDirectory, 0o777)
+  .then(() => {
+    console.log('Los permisos del directorio se han configurado correctamente.');
+  })
+  .catch((err) => {
     console.error(`Error al cambiar los permisos del directorio: ${err}`);
-    return;
-  }
-  console.log('Los permisos del directorio se han configurado correctamente.');
-});
+  });
+
 
 
 const fs = require('fs');
