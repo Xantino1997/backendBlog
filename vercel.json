@@ -34,5 +34,10 @@
         }
       ]
     }
-  ]
+  ],
+  "server": {
+    "fs": {
+      "maxFileSize": "10mb"
+    }
+  }
 }
