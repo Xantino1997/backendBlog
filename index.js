@@ -21,6 +21,20 @@ const uploadMiddleware = multer({
 });
 
 const fs = require('fs');
+
+const storageDirectory = 'uploads/';
+
+// Asegurar los permisos del directorio de almacenamiento
+fs.chmod(storageDirectory, 0o777, (err) => {
+  if (err) {
+    console.error(`Error al cambiar los permisos del directorio: ${err}`);
+    return;
+  }
+  console.log('Los permisos del directorio se han configurado correctamente.');
+});
+
+
+const fs = require('fs');
 const dotenv = require('dotenv').config();
 
 const port = process.env.PORT || 4000;
@@ -296,17 +310,23 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       fs.renameSync(path, newPath);
     }
 
-    const { id, title, summary, content } = req.body;
-    const postDoc = await Post.findById(id);
-
-    await postDoc.update({
-      title,
-      summary,
-      content,
-      cover: newPath ? newPath : postDoc.cover,
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+      const { id, title, summary, content } = req.body;
+      const postDoc = await Post.findById(id);
+      const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+      if (!isAuthor) {
+        return res.status(400).json({ error: 'You are not the author' });
+      }
+      await postDoc.update({
+        title,
+        summary,
+        content,
+        cover: newPath ? newPath : postDoc.cover,
+      });
+      res.json(postDoc);
     });
-
-    res.json(postDoc);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'An error occurred in the backend' });
