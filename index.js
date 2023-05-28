@@ -299,7 +299,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 
-app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
   try {
     let newPath = null;
     if (req.file) {
@@ -310,27 +310,33 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       fs.renameSync(path, newPath);
     }
 
-    const { id, title, summary, content } = req.body;
-    
-    // Aquí puedes realizar las validaciones necesarias antes de actualizar la publicación
-    
-    // Simulando la actualización de la publicación
-    const updatedPost = {
-      id,
-      title,
-      summary,
-      content,
-      cover: newPath ? newPath : '', // Usar newPath si existe, de lo contrario, mantener el valor original de cover
-    };
-    
-    // Enviar la respuesta con el JSON de la publicación actualizada
-    res.json(updatedPost);
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+
+      const { id } = req.params;
+      const { title, summary, content } = req.body;
+
+      const postDoc = await Post.findById(id);
+      const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+      if (!isAuthor) {
+        return res.status(400).json('You are not the author');
+      }
+
+      await postDoc.update({
+        title,
+        summary,
+        content,
+        cover: newPath ? newPath : postDoc.cover,
+      });
+
+      res.json(postDoc);
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: 'Error occurred in the backend' });
+    res.status(500).json('An error occurred while updating the post');
   }
 });
-
 
 
 app.listen(port, () => {
