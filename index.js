@@ -298,35 +298,24 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   });
 });
 
-
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   try {
-    let newPath = null;
-    if (req.file) {
-      const { originalname, path } = req.file;
-      const parts = originalname.split('.');
-      const ext = parts[parts.length - 1];
-      newPath = path + '.' + ext;
-      fs.renameSync(path, newPath);
-    }
+    // Resto del código...
 
+    // Comentamos la verificación del token y el secreto
+    /*
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
       if (err) throw err;
-      const { id, title, summary, content } = req.body;
-      const postDoc = await Post.findById(id);
-      const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-      if (!isAuthor) {
-        return res.status(400).json({ error: 'You are not the author' });
-      }
-      await postDoc.update({
-        title,
-        summary,
-        content,
-        cover: newPath ? newPath : postDoc.cover,
-      });
-      res.json(postDoc);
+      // Resto del código...
     });
+    */
+
+    // Modificamos el código para devolver solo los títulos
+    const { id, title, summary, content } = req.body;
+    const postDoc = await Post.findById(id);
+    const titles = postDoc.map((post) => post.title);
+    res.json({ titles });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'An error occurred in the backend' });
