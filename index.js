@@ -13,13 +13,29 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-const uploadMiddleware = multer({
-  dest: 'uploads/',
-  limits: {
-    fileSize: 10 * 1024 * 1024 // 10 megabytes
+// const uploadMiddleware = multer({
+//   dest: '',
+//   limits: {
+//     fileSize: 10 * 1024 * 1024 // 10 megabytes
+//   }
+// });
+
+
+app.use('/uploads', express.static(__dirname + '/uploads'));
+
+
+// Configuración de multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); 
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
   }
 });
 
+const uploadMiddleware = multer({ storage });
 
 const fs = require('fs').promises;
 
