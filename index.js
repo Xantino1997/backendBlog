@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 const path = require('path');
-
+const { v4: uuidv4 } = require('uuid');
 
 const uploadMiddleware = multer({
   dest: 'uploads/',
@@ -22,36 +22,18 @@ const uploadMiddleware = multer({
 
 const fs = require('fs');
 const dotenv = require('dotenv').config();
-// port te lo da el hospedador por defecto sino obtiene le 4000
-
 
 const port = process.env.PORT || 4000;
-const uri = process.env.REACT_APP_URI
+const uri = process.env.REACT_APP_URI;
 
 const bodyParser = require('body-parser');
 
-// Usar body-parser para procesar los datos en el cuerpo de las solicitudes entrantes
 const jsonParser = bodyParser.json({ limit: '50mb' });
 const urlencodedParser = bodyParser.urlencoded({ limit: '50mb', extended: true });
 
-// utilizar los analizadores de cuerpo en la aplicación
 app.use(jsonParser);
 app.use(urlencodedParser);
 
-// sin cors
-
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', 'https://sentidos.vercel.app');
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//   res.setHeader('Access-Control-Allow-Credentials', 'true');
-//   next();
-// });
-
-
-
-
-// con cors
 app.use(cors({
   origin: "https://sentidos.vercel.app",
   credentials: true
@@ -60,27 +42,20 @@ app.use(cors({
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
-
 app.use(express.json());
-
-
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
-
 mongoose.connect(uri, {
-  useNewUrlParser: true,    // usa el nuevo parser de URL
-  useUnifiedTopology: true, // utiliza la nueva topología unificada
-
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 }).then(() => {
-  console.log('Conexión exitosa a la base Mongo database');
+  console.log('Conexión exitosa a la base de datos de Mongo');
 }).catch((error) => {
   console.log('Error al conectar a la base de datos:', error);
 });
 
-
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-
   const { username, password } = req.body;
   const { originalname, path } = req.file;
   const parts = originalname.split('.');
@@ -100,7 +75,6 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
   }
 });
 
-// Configurar el transporte de correo electrónico
 const config = {
   host: 'smtp.gmail.com',
   port: 587,
@@ -108,9 +82,9 @@ const config = {
   auth: {
     user: 'sentidospadres@gmail.com',
     pass: "iescuoxwerackzdr"
-    //  process.env.PASS_FOR_MAIL
   },
-}
+};
+
 const transport = nodemailer.createTransport(config);
 let lastSubscriberId = 0;
 
@@ -355,3 +329,4 @@ app.listen(port, () => {
   console.log('Runnig SERVER ' + port);
 });
 //
+
