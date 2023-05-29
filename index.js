@@ -189,24 +189,32 @@ app.post('/login', async (req, res) => {
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
     // Generate JWT token
-    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-      if (err) throw err;
-      
-      // Set token as a cookie
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none'
-      }).json({
-        id: userDoc._id,
-        username,
-        profilePicture: userDoc.profilePicture
-      });
+    const token = jwt.sign({ username, id: userDoc._id }, secret, { expiresIn: '5m' });
+    
+    // Set token as a cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    });
+    
+    // Set expiration time for sessionStorage
+    const expirationTime = new Date().getTime() + 5 * 60 * 1000; // Current time + 5 minutes
+    
+    // Save token and expiration time in sessionStorage
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('tokenExpiration', expirationTime.toString());
+    
+    res.json({
+      id: userDoc._id,
+      username,
+      profilePicture: userDoc.profilePicture
     });
   } else {
     res.status(400).json('Wrong credentials');
   }
 });
+
 
 
 
