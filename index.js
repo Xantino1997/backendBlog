@@ -194,7 +194,7 @@ app.post('/login', async (req, res) => {
     const expirationTime = new Date().getTime() + 5 * 60 * 1000; // Current time + 5 minutes
     
     // Save token and expiration time in sessionStorage
-    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('token', JSON.parse(token));
     sessionStorage.setItem('tokenExpiration', expirationTime.toString());
     
     res.json({
