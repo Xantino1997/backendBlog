@@ -335,9 +335,9 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
 
       await postDoc.update({
         title,
-        summary,
-        content,
-        cover: newPath ? newPath : postDoc.cover,
+        // summary,
+        // content,
+        // cover: newPath ? newPath : postDoc.cover,
       });
 
       res.json(postDoc);
