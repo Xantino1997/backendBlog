@@ -177,7 +177,6 @@ app.post('/suscriptors', async (req, res) => {
 
 
 
-
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
@@ -190,13 +189,6 @@ app.post('/login', async (req, res) => {
   if (passOk) {
     // Generate JWT token
     const token = jwt.sign({ username, id: userDoc._id }, secret, { expiresIn: '5m' });
-    
-    // Set token as a cookie
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none'
-    });
     
     // Set expiration time for sessionStorage
     const expirationTime = new Date().getTime() + 5 * 60 * 1000; // Current time + 5 minutes
@@ -214,9 +206,6 @@ app.post('/login', async (req, res) => {
     res.status(400).json('Wrong credentials');
   }
 });
-
-
-
 
 
 
