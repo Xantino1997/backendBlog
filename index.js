@@ -179,9 +179,13 @@ app.post('/suscriptors', async (req, res) => {
 
 
 app.post('/login', async (req, res) => {
-
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
+  
+  if (!userDoc) {
+    return res.status(400).json('User not found');
+  }
+
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
     // logged in
@@ -190,11 +194,11 @@ app.post('/login', async (req, res) => {
       res.cookie('token', token).json({
         id: userDoc._id,
         username,
-        profilePicture: userDoc.profilePicture // agrega la propiedad profilePicture a la respuesta
+        profilePicture: userDoc.profilePicture
       });
     });
   } else {
-    res.status(400).json('Wrong credentials is ready');
+    res.status(400).json('Wrong credentials');
   }
 });
 
