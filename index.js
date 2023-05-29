@@ -188,10 +188,16 @@ app.post('/login', async (req, res) => {
 
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
-    // logged in
+    // Generate JWT token
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
       if (err) throw err;
-      res.cookie('token', token).json({
+      
+      // Set token as a cookie
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none'
+      }).json({
         id: userDoc._id,
         username,
         profilePicture: userDoc.profilePicture
