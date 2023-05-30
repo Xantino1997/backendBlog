@@ -318,6 +318,7 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
       const ext = parts[parts.length - 1];
       newPath = path + '.' + ext;
       fs.renameSync(path, newPath);
+      console.log(req.headers);
     }
 
     const { token } = req.cookies;
