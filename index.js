@@ -211,19 +211,29 @@ app.post('/login', async (req, res) => {
 
 
 
-
 app.get('/profile', (req, res) => {
-
   const { token } = req.cookies;
   if (!token) {
     return res.status(401).json({ message: 'No se proporcionó un token' });
   }
+
   jwt.verify(token, secret, {}, (err, info) => {
     if (err) {
       return res.status(401).json({ message: 'Token inválido' });
     }
+
+    // Establecer la cookie en la respuesta
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    });
+
+    // Devolver el perfil del usuario
     res.json(info);
-    // console.log(info);
+
+    // Mostrar alerta de token válido
+    console.log('Token válido');
   });
 });
 
