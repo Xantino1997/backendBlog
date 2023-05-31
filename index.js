@@ -203,8 +203,10 @@ app.post('/login', async (req, res) => {
         profilePicture: userDoc.profilePicture
       });
     });
+    console.log("Token JWT generado en el login:", token);
   } else {
     res.status(400).json('Wrong credentials');
+    console.log('Token JWT no generado en el login:', token);
   }
 });
 
