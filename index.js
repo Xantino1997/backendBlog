@@ -249,15 +249,18 @@ app.post('/login', async (req, res) => {
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
       if (err) throw err;
       res.cookie('token', token).json({
+        token,
         id: userDoc._id,
         username,
-        profilePicture: userDoc.profilePicture // agrega la propiedad profilePicture a la respuesta
+        profilePicture: userDoc.profilePicture
       });
     });
   } else {
     res.status(400).json('wrong credentials');
   }
 });
+
+
 app.get('/profile', (req, res) => {
 
   const { token } = req.cookies;
@@ -269,7 +272,6 @@ app.get('/profile', (req, res) => {
       return res.status(401).json({ message: 'Token inválido' });
     }
     res.json(info);
-    // console.log(info);
   });
 });
 
