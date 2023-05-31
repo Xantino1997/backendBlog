@@ -177,10 +177,11 @@ app.post('/suscriptors', async (req, res) => {
 
 
 
+
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
-
+  
   if (!userDoc) {
     return res.status(400).json('User not found');
   }
@@ -190,7 +191,7 @@ app.post('/login', async (req, res) => {
     // Generate JWT token
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
       if (err) throw err;
-
+      
       // Set token as a cookie
       res.cookie('token', token, {
         httpOnly: true,
@@ -201,13 +202,13 @@ app.post('/login', async (req, res) => {
         username,
         profilePicture: userDoc.profilePicture
       });
-
-      console.log("Token JWT generado:", token); // Movido dentro de la función de devolución de llamada
     });
   } else {
     res.status(400).json('Wrong credentials');
   }
 });
+
+
 
 
 
