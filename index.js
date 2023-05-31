@@ -254,7 +254,7 @@ app.get('/profile', (req, res) => {
     if (err) {
       return res.status(401).json({ message: 'Token inválido' });
     }
-    res.json(info);
+    res.json(JSON.stringify(info));
   });
 });
 
