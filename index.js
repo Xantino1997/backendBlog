@@ -177,7 +177,6 @@ app.post('/suscriptors', async (req, res) => {
 
 
 
-
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
@@ -202,11 +201,11 @@ app.post('/login', async (req, res) => {
         username,
         profilePicture: userDoc.profilePicture
       });
+
+      console.log("Token JWT generado:", token); // Movido dentro de la función de devolución de llamada
     });
-    console.log("Token JWT generado en el login:", token);
   } else {
     res.status(400).json('Wrong credentials');
-    console.log('Token JWT no generado en el login:', token);
   }
 });
 
