@@ -281,9 +281,8 @@ app.post('/logout', (req, res) => {
   res.redirect('/');
 });
 
-
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  console.log(req.cookies + "cookies de out de edit");
+ 
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
