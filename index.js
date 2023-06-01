@@ -277,7 +277,10 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.cookie('token', '').json;
+  const previousToken = req.cookies.token;
+  const newToken = ''; // Aquí puedes establecer el nuevo valor del token
+
+  res.cookie('token', newToken);
   res.redirect('/');
 });
 
