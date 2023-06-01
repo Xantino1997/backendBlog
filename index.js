@@ -277,7 +277,8 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  res.cookie('token', '').json('ok');
+  res.clearCookie('token');
+  res.redirect('/');
 });
 
 
