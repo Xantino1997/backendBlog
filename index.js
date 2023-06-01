@@ -282,6 +282,7 @@ app.post('/logout', (req, res) => {
 });
 
 
+// Ruta PUT para editar el post
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   let newPath = null;
   if (req.file) {
@@ -292,7 +293,8 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     fs.renameSync(path, newPath);
   }
 
-  const { token } = req.cookies;
+  const { token } = req.cookies; // Obtener el token de las cookies
+
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
     const { id, title, summary, content } = req.body;
@@ -310,8 +312,8 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
     res.json(postDoc);
   });
-
 });
+
 
 app.get('/post', async (req, res) => {
   res.json(
