@@ -282,8 +282,8 @@ app.post('/logout', (req, res) => {
 });
 
 
-// Ruta PUT para editar el post
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+  console.log(req.cookies + "cookies de out de edit");
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -293,7 +293,13 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     fs.renameSync(path, newPath);
   }
 
-  const { token } = req.cookies; // Obtener el token de las cookies
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Token de autorización no proporcionado' });
+  }
+
+  const token = authHeader.split(' ')[1];
 
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
