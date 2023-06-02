@@ -28,20 +28,9 @@ const uploadMiddleware = multer({
   }
 });
 
-const fs = require('fs').promises;
-
-const storageDirectory = 'uploads/';
-
-fs.chmod(storageDirectory, 0o777)
-  .then(() => {
-    console.log('Los permisos del directorio se han configurado correctamente.');
-  })
-  .catch((err) => {
-    console.error(`Error al cambiar los permisos del directorio: ${err}`);
-  });
 
 
-
+// 
 const dotenv = require('dotenv').config();
 
 const port = process.env.PORT || 4000;
@@ -65,7 +54,6 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 app.use(express.json());
 app.use(cookieParser());
-app.use('/uploads', express.static(__dirname + '/uploads'));
 
 mongoose.connect(uri, {
   useNewUrlParser: true,
@@ -77,17 +65,12 @@ mongoose.connect(uri, {
 });
 
 // Register con cloudinary
-
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
   const { username, password } = req.body;
-  const { originalname, path } = req.file;
-  const parts = originalname.split('.');
-  const ext = parts[parts.length - 1];
-  const newPath = path + '.' + ext;
-  fs.renameSync(path, newPath);
+  const { path } = req.file;
 
   try {
-    const cloudinaryUploadResult = await cloudinary.uploader.upload(newPath);
+    const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
     const { secure_url } = cloudinaryUploadResult;
 
     const userDoc = await User.create({
@@ -102,7 +85,6 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
     res.status(400).json(e);
   }
 });
-
 
 
 // config para el mouse
@@ -214,11 +196,7 @@ app.get('/post/:id', async (req, res) => {
 
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-  const { originalname, path } = req.file;
-  const parts = originalname.split('.');
-  const ext = parts[parts.length - 1];
-  const newPath = path + '.' + ext;
-  fs.renameSync(path, newPath);
+  const { path } = req.file;
 
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, async (err, info) => {
@@ -226,7 +204,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     const { title, summary, content, profileAvatar } = req.body;
 
     try {
-      const cloudinaryUploadResult = await cloudinary.uploader.upload(newPath);
+      const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
       const { secure_url } = cloudinaryUploadResult;
 
       const postDoc = await Post.create({
@@ -331,11 +309,8 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   let newPath = null;
 
   if (req.file) {
-    const { originalname, path } = req.file;
-    const parts = originalname.split('.');
-    const ext = parts[parts.length - 1];
-    newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
+    const { path } = req.file;
+    newPath = path;
   }
 
   const authHeader = req.headers.authorization;
