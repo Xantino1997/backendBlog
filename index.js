@@ -195,11 +195,17 @@ app.get('/post/:id', async (req, res) => {
 
 // edit the post
 
-
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   const { path } = req.file;
 
-  const { token } = req.cookies;
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Token de autorización no proporcionado' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
     const { title, summary, content, profileAvatar } = req.body;
@@ -256,7 +262,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     }
   });
 });
-
 
 
 app.post('/login', async (req, res) => {
