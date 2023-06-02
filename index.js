@@ -280,8 +280,7 @@ app.post('/logout', (req, res) => {
   const previousToken = req.cookies.token;
   const newToken = ''; // Aquí puedes establecer el nuevo valor del token
 
-  res.cookie('token', newToken);
-  res.redirect('/');
+  res.cookie('token', newToken).json();
 });
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
