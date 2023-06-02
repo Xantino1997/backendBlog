@@ -66,7 +66,6 @@ mongoose.connect(uri, {
 }).catch((error) => {
   console.log('Error al conectar a la base de datos:', error);
 });
-
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
   const { username, password } = req.body;
   const { originalname, path } = req.file;
@@ -110,9 +109,14 @@ app.post('/suscriptors', async (req, res) => {
 
     const existingSubscriber = await Suscriptor.findOne({ email });
 
-
     if (existingSubscriber) {
       return res.status(400).json({ error: 'El suscriptor ya existe' });
+    }
+
+    const lastSubscriber = await Suscriptor.findOne().sort({ id: -1 });
+
+    if (lastSubscriber) {
+      lastSubscriberId = lastSubscriber.id;
     }
 
     const newSuscriptor = new Suscriptor({ name, email });
@@ -156,7 +160,6 @@ app.post('/suscriptors', async (req, res) => {
           </footer>
       `
     };
-
 
     transport.sendMail(mailOptions, (error, info) => {
       if (error) {
