@@ -67,6 +67,14 @@ mongoose.connect(uri, {
 
 // Register con cloudinary
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
   const { username, password } = req.body;
   const { path } = req.file;
 
@@ -106,6 +114,14 @@ let lastSubscriberId = 0;
 // suscriptores
 
 app.post('/suscriptors', async (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
   const { name, email } = req.body;
 
   try {
@@ -185,6 +201,14 @@ app.post('/suscriptors', async (req, res) => {
 
 
 app.get('/post/:id', async (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
   const { id } = req.params;
   const postDoc = await Post.findById(id).populate('author', ['username']);
   res.json(postDoc);
@@ -196,6 +220,14 @@ app.get('/post/:id', async (req, res) => {
 // edit the post
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
   const { path } = req.file;
 
   const authHeader = req.headers.authorization;
@@ -265,6 +297,14 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.post('/login', async (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
   const { username, password } = req.body;
   const userDoc = await User.findOne({ username });
   const passOk = bcrypt.compareSync(password, userDoc.password);
@@ -286,6 +326,14 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/profile', (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
 
   const { token } = req.cookies;
   if (!token) {
@@ -301,6 +349,7 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
+  
   const previousToken = req.cookies.token;
   const newToken = ''; // Aquí puedes establecer el nuevo valor del token
 
@@ -312,6 +361,14 @@ app.post('/logout', (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
   let newPath = null;
 
   if (req.file) {
@@ -363,6 +420,14 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.get('/post', async (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
   res.json(
     await Post.find()
       .populate('author', ['username'])
@@ -372,6 +437,14 @@ app.get('/post', async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => {
+    console.log('Conexión exitosa a la base de datos de Mongo');
+  }).catch((error) => {
+    console.log('Error al conectar a la base de datos:', error);
+  });
   const { id } = req.params;
   const postDoc = await Post.findById(id).populate('author', ['username']);
   res.json(postDoc);
