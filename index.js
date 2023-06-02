@@ -13,6 +13,7 @@ const nodemailer = require('nodemailer');
 
 
 const cloudinary = require('cloudinary').v2;
+const dotenv = require('dotenv').config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -31,7 +32,7 @@ const uploadMiddleware = multer({
 
 
 // 
-const dotenv = require('dotenv').config();
+
 
 const port = process.env.PORT || 4000;
 const uri = process.env.REACT_APP_URI;
