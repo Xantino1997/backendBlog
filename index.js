@@ -25,7 +25,7 @@ cloudinary.config({
 const uploadMiddleware = multer({
   storage: multer.diskStorage({}), // Configuración vacía para evitar guardar localmente
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10 megabytes
+    fileSize: 40 * 1024 * 1024 // 40 megabytes
   }
 });
 
