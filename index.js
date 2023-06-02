@@ -11,13 +11,22 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 
+
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+});
+
+
 const uploadMiddleware = multer({
-  dest: 'uploads/',
+  storage: multer.diskStorage({}), // Configuración vacía para evitar guardar localmente
   limits: {
     fileSize: 10 * 1024 * 1024 // 10 megabytes
   }
 });
-
 
 const fs = require('fs').promises;
 
@@ -66,6 +75,9 @@ mongoose.connect(uri, {
 }).catch((error) => {
   console.log('Error al conectar a la base de datos:', error);
 });
+
+// Register con cloudinary
+
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
   const { username, password } = req.body;
   const { originalname, path } = req.file;
@@ -73,12 +85,17 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
   const ext = parts[parts.length - 1];
   const newPath = path + '.' + ext;
   fs.renameSync(path, newPath);
+
   try {
+    const cloudinaryUploadResult = await cloudinary.uploader.upload(newPath);
+    const { secure_url } = cloudinaryUploadResult;
+
     const userDoc = await User.create({
       username,
       password: bcrypt.hashSync(password, salt),
-      profilePicture: newPath,
+      profilePicture: secure_url, // Guarda la URL de Cloudinary en lugar de la ruta local
     });
+
     res.json(userDoc);
   } catch (e) {
     console.log(e);
@@ -86,6 +103,9 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
   }
 });
 
+
+
+// config para el mouse
 const config = {
   host: 'smtp.gmail.com',
   port: 587,
@@ -98,6 +118,9 @@ const config = {
 
 const transport = nodemailer.createTransport(config);
 let lastSubscriberId = 0;
+
+
+// suscriptores
 
 app.post('/suscriptors', async (req, res) => {
   const { name, email } = req.body;
@@ -201,46 +224,60 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
     const { title, summary, content, profileAvatar } = req.body;
-    const postDoc = await Post.create({
-      title,
-      summary,
-      content,
-      cover: newPath,
-      profilePicture: profileAvatar,
-      author: info.id,
-    });
 
-    const subscribers = await Suscriptor.find({}, 'email');
-    // const titulo = title
-    for (const subscriber of subscribers) {
-      const subscriberEmail = subscriber.email;
+    try {
+      const cloudinaryUploadResult = await cloudinary.uploader.upload(newPath);
+      const { secure_url } = cloudinaryUploadResult;
 
-      // Enlace al post
-      const postId = postDoc._id; // Suponiendo que el ID del post se encuentra en el campo _id
-      const link = `https://sentidos.vercel.app/post/${postId}`;
-
-      // Envío del correo electrónico al suscriptor actual
-      const mailOptions = {
-        from: 'sentidospadres@gmail.com', // Tu dirección de correo electrónico
-        to: subscriberEmail,
-        subject: 'Nuevo post creado',
-        html: `Hola como estas?, queriamos contarte que se creo un nuevo post:<br><br>
-        <h2>Título: ${title}</h2><br>
-        Dale click en el siguiente enlace: <br></br><hr><button style="background-color: #66b3ff; color: white; font-weight: bold;border-radius:15px"><a href="${link}" style="color: white; text-decoration: none;">VER EL ARTÍCULO</a></button>`,
-
-      };
-
-      transport.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Correo enviado:', info.response);
-        }
+      const postDoc = await Post.create({
+        title,
+        summary,
+        content,
+        cover: secure_url, // Guarda la URL de Cloudinary en lugar de la ruta local
+        profilePicture: profileAvatar,
+        author: info.id,
       });
+
+      const subscribers = await Suscriptor.find({}, 'email');
+
+      for (const subscriber of subscribers) {
+        const subscriberEmail = subscriber.email;
+
+        // Enlace al post
+        const postId = postDoc._id;
+        const link = `https://sentidos.vercel.app/post/${postId}`;
+
+        // Envío del correo electrónico al suscriptor actual
+        const mailOptions = {
+          from: 'sentidospadres@gmail.com', // Tu dirección de correo electrónico
+          to: subscriberEmail,
+          subject: 'Nuevo post creado',
+          html: `Hola, ¿cómo estás? Queríamos contarte que se creó un nuevo post:<br><br>
+          <h2>Título: ${title}</h2><br>
+          Dale click en el siguiente enlace:<br><br>
+          <hr>
+          <button style="background-color: #66b3ff; color: white; font-weight: bold; border-radius: 15px">
+            <a href="${link}" style="color: white; text-decoration: none;">VER EL ARTÍCULO</a>
+          </button>`,
+        };
+
+        transport.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Correo enviado:', info.response);
+          }
+        });
+      }
+
+      res.json(postDoc);
+    } catch (e) {
+      console.log(e);
+      res.status(400).json(e);
     }
-    res.json(postDoc);
   });
 });
+
 
 
 app.post('/login', async (req, res) => {
@@ -286,9 +323,13 @@ app.post('/logout', (req, res) => {
   res.cookie('token', newToken).json();
 });
 
+
+
+
+
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
- 
   let newPath = null;
+
   if (req.file) {
     const { originalname, path } = req.file;
     const parts = originalname.split('.');
@@ -311,18 +352,33 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     const postDoc = await Post.findById(id);
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
     if (!isAuthor) {
-      return res.status(400).json('you are not the author');
+      return res.status(400).json('No eres el autor');
     }
-    await postDoc.update({
-      title,
-      summary,
-      content,
-      cover: newPath ? newPath : postDoc.cover,
-    });
 
-    res.json(postDoc);
+    try {
+      let updatedCover = postDoc.cover;
+
+      if (newPath) {
+        const cloudinaryUploadResult = await cloudinary.uploader.upload(newPath);
+        updatedCover = cloudinaryUploadResult.secure_url;
+      }
+
+      await postDoc.update({
+        title,
+        summary,
+        content,
+        cover: updatedCover,
+      });
+
+      res.json(postDoc);
+    } catch (e) {
+      console.log(e);
+      res.status(400).json(e);
+    }
   });
 });
+
+
 
 
 app.get('/post', async (req, res) => {
