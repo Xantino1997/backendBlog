@@ -357,9 +357,6 @@ app.post('/logout', (req, res) => {
 });
 
 
-
-
-
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
   mongoose.connect(uri, {
     useNewUrlParser: true,
