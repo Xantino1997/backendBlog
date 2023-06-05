@@ -18,7 +18,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://blog-sentidos-2023.vercel.app, https://sentidos.vercel.app"
+          "value": "https://blog-sentidos-2023.vercel.app, https://sentidos.vercel.app,https://res.cloudinary.com/dcwwhkqb2/image/upload"
         },
         {
           "key": "Access-Control-Allow-Methods",

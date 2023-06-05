@@ -46,7 +46,7 @@ app.use(jsonParser);
 app.use(urlencodedParser);
 
 app.use(cors({
-  origin: "https://sentidos.vercel.app",
+  origin: "https://sentidos.vercel.app add",
   credentials: true
 }));
 
