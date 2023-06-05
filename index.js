@@ -294,8 +294,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     }
   });
 });
-
-
 app.post('/login', async (req, res) => {
   mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -312,7 +310,11 @@ app.post('/login', async (req, res) => {
     // logged in
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
       if (err) throw err;
-      res.cookie('token', token).json({
+      res.cookie('token', token, {
+        httpOnly: true, // La cookie solo es accesible por el servidor
+        path: '/', // La cookie es válida en todo el sitio
+        secure: true // La cookie solo se enviará en conexiones HTTPS
+      }).json({
         token,
         id: userDoc._id,
         username,
@@ -323,7 +325,6 @@ app.post('/login', async (req, res) => {
     res.status(400).json('wrong credentials');
   }
 });
-
 
 app.get('/profile', (req, res) => {
   // mongoose.connect(uri, {
