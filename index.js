@@ -65,7 +65,6 @@ mongoose.connect(uri, {
   console.log('Error al conectar a la base de datos:', error);
 });
 
-// Register con cloudinary
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
   mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -94,7 +93,6 @@ app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res
     res.status(400).json(e);
   }
 });
-
 
 // config para el mouse
 const config = {
