@@ -46,7 +46,7 @@ app.use(jsonParser);
 app.use(urlencodedParser);
 
 app.use(cors({
-  origin: "https://sentidos.vercel.app",
+  origin: "https://blog-sentidos-2023.vercel.app",
   credentials: true
 }));
 
@@ -163,7 +163,7 @@ app.post('/suscriptors', async (req, res) => {
       html: `
         <p>¡Hola <b>${name}, como estas?<b>!</p>
         <p>Gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
-        <p>Visita nuestra web: <a href="https://sentidos.vercel.app"><b>https://sentidos.vercel.app<b></a></p>
+        <p>Visita nuestra web: <a href="https://blog-sentidos-2023.vercel.app"><b>https://sentidos.vercel.app<b></a></p>
     
         <p>O ingresa a nuestras redes : 😎
           <footer>
@@ -326,14 +326,14 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/profile', (req, res) => {
-  mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => {
-    console.log('Conexión exitosa a la base de datos de Mongo');
-  }).catch((error) => {
-    console.log('Error al conectar a la base de datos:', error);
-  });
+  // mongoose.connect(uri, {
+  //   useNewUrlParser: true,
+  //   useUnifiedTopology: true,
+  // }).then(() => {
+  //   console.log('Conexión exitosa a la base de datos de Mongo');
+  // }).catch((error) => {
+  //   console.log('Error al conectar a la base de datos:', error);
+  // });
 
   const { token } = req.cookies;
   if (!token) {
