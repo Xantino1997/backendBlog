@@ -66,19 +66,10 @@ mongoose.connect(uri, {
 });
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Token de autorización no proporcionado' });
-  }
-
-  const token = authHeader.split(' ')[1];
+  const { username, password } = req.body;
+  const { path } = req.file;
 
   try {
-    const decodedToken = jwt.verify(token, secret);
-    const { username, password } = req.body;
-    const { path } = req.file;
-
     const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
     const { secure_url } = cloudinaryUploadResult;
 
