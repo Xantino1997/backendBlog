@@ -152,7 +152,7 @@ app.post('/suscriptors', async (req, res) => {
       subject: 'Gracias por suscribirte al Post de Sentidos Padres',
       html: `
         <p>¡Hola <b>${name}, como estas?<b>!</p>
-        <p>Gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
+        <p>Gracias,gracias,gracias por suscribirte a Sentidos Padres. A partir de ahora, recibirás un correo electrónico cada vez que se publique un nuevo post.</p>
         <p>Visita nuestra web: <a href="https://sentidos.vercel.app"><b>https://sentidos.vercel.app<b></a></p>
     
         <p>O ingresa a nuestras redes : 😎
