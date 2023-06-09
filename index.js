@@ -66,31 +66,32 @@ mongoose.connect(uri, {
 });
 
 app.post('/register', uploadMiddleware.single('profilePicture'), async (req, res) => {
-  mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => {
-    console.log('Conexión exitosa a la base de datos de Mongo');
-  }).catch((error) => {
-    console.log('Error al conectar a la base de datos:', error);
-  });
-  const { username, password } = req.body;
-  const { path } = req.file;
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Token de autorización no proporcionado' });
+  }
+
+  const token = authHeader.split(' ')[1];
 
   try {
+    const decodedToken = jwt.verify(token, secret);
+    const { username, password } = req.body;
+    const { path } = req.file;
+
     const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
     const { secure_url } = cloudinaryUploadResult;
 
     const userDoc = await User.create({
       username,
       password: bcrypt.hashSync(password, salt),
-      profilePicture: secure_url, // Guarda la URL de Cloudinary en lugar de la ruta local
+      profilePicture: secure_url,
     });
 
     res.json(userDoc);
-  } catch (e) {
-    console.log(e);
-    res.status(400).json(e);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json(error);
   }
 });
 
