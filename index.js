@@ -438,8 +438,34 @@ app.get('/post/:id', async (req, res) => {
   res.json(postDoc);
 })
 
+// lo nuevo del menu
+
+
+app.post("/notice", (req, res) => {
+  // Obtener los datos de la noticia del cuerpo de la solicitud
+  const titulo = req.body.titulo;
+  const parrafo = req.body.parrafo;
+  const foto = req.file; // Aquí asumimos que se está enviando un archivo de imagen en la solicitud
+
+  // Procesar los datos de la noticia como desees (guardar en la base de datos, almacenar la imagen, etc.)
+
+  // Enviar una respuesta al cliente
+  res.send("Noticia recibida correctamente");
+});
+
+
+
+app.post("/nosotros", (req, res) => {
+  const { titulo, reseña } = req.body;
+  // Actualizar los datos de nosotros con los valores enviados en la solicitud
+  infoNosotros.titulo = titulo;
+  infoNosotros.reseña = reseña;
+
+  res.send("Información de Nosotros actualizada correctamente");
+});
+
+
 app.listen(port, () => {
   console.log('Runnig SERVER ' + port);
 });
 //
-
