@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const User = require('./models/User');
 const Post = require('./models/Post');
 const Suscriptor = require('./models/Suscribe');
+const Event = require('./models/Event');
 const bcrypt = require('bcryptjs');
 const app = express();
 const jwt = require('jsonwebtoken');
@@ -104,7 +105,7 @@ let lastSubscriberId = 0;
 // suscriptores
 
 app.post('/suscriptors', async (req, res) => {
-
+ 
   const { name, email } = req.body;
 
   try {
@@ -195,7 +196,7 @@ app.get('/post/:id', async (req, res) => {
 // edit the post
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-
+  
   const { path } = req.file;
 
   const authHeader = req.headers.authorization;
@@ -291,6 +292,7 @@ app.post('/login', async (req, res) => {
 
 app.get('/profile', (req, res) => {
 
+
   const { token } = req.cookies;
   if (!token) {
     return res.status(401).json({ message: 'No se proporcionó un token' });
@@ -305,7 +307,6 @@ app.get('/profile', (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-
   const previousToken = req.cookies.token;
   const newToken = ''; // Aquí puedes establecer el nuevo valor del token
 
@@ -314,14 +315,7 @@ app.post('/logout', (req, res) => {
 
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-  mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => {
-    console.log('Conexión exitosa a la base de datos de Mongo');
-  }).catch((error) => {
-    console.log('Error al conectar a la base de datos:', error);
-  });
+
   let newPath = null;
 
   if (req.file) {
@@ -373,14 +367,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
 
 app.get('/post', async (req, res) => {
-  mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => {
-    console.log('Conexión exitosa a la base de datos de Mongo');
-  }).catch((error) => {
-    console.log('Error al conectar a la base de datos:', error);
-  });
+
   res.json(
     await Post.find()
       .populate('author', ['username'])
@@ -390,14 +377,6 @@ app.get('/post', async (req, res) => {
 });
 
 app.get('/post/:id', async (req, res) => {
-  mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => {
-    console.log('Conexión exitosa a la base de datos de Mongo');
-  }).catch((error) => {
-    console.log('Error al conectar a la base de datos:', error);
-  });
   const { id } = req.params;
   const postDoc = await Post.findById(id).populate('author', ['username']);
   res.json(postDoc);
@@ -408,18 +387,7 @@ app.get('/post/:id', async (req, res) => {
 // lo nuevo del menu
 
 
-app.post("/notice", (req, res) => {
-  // Obtener los datos de la noticia del cuerpo de la solicitud
-  const titulo = req.body.titulo;
-  const parrafo = req.body.parrafo;
-  const foto = req.file; // Aquí asumimos que se está enviando un archivo de imagen en la solicitud
-
-  // Procesar los datos de la noticia como desees (guardar en la base de datos, almacenar la imagen, etc.)
-
-  // Enviar una respuesta al cliente
-  res.send("Noticia recibida correctamente");
-});
-
+// 
 
 
 app.post("/nosotros", (req, res) => {
@@ -431,6 +399,78 @@ app.post("/nosotros", (req, res) => {
   res.send("Información de Nosotros actualizada correctamente");
 });
 
+app.post("/events", (req, res) => {
+  const { titulo, reseña } = req.body;
+  // Actualizar los datos de nosotros con los valores enviados en la solicitud
+  infoNosotros.titulo = titulo;
+  infoNosotros.reseña = reseña;
+
+  res.send("Información de Nosotros actualizada correctamente");
+});
+
+
+// Ruta para crear un nuevo evento
+app.post("/createadvice", uploadMiddleware.single("image"), async (req, res) => {
+  const { title, description, eventDate } = req.body;
+
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Token de autorización no proporcionado" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const { path } = req.file;
+
+    try {
+      const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
+      const { secure_url } = cloudinaryUploadResult;
+      const newEvent = new Event({
+        title,
+        image: secure_url,
+        description,
+        eventDate,
+      });
+
+      const event = await newEvent.save();
+
+      res.status(201).json(event);
+    } catch (error) {
+      console.error("Error al crear el evento:", error);
+      res.status(500).json({ error: "Error al crear el evento" });
+    }
+  });
+});
+
+// Ruta para eliminar un evento
+app.delete("/deleteadvice/:id", async (req, res) => {
+  const eventId = req.params.id;
+
+  try {
+    const deletedEvent = await Event.findByIdAndDelete(eventId);
+    if (!deletedEvent) {
+      return res.status(404).json({ error: "No se encontró el evento" });
+    }
+    res.status(200).json({ message: "Evento eliminado exitosamente" });
+  } catch (error) {
+    console.error("Error al eliminar el evento:", error);
+    res.status(500).json({ error: "Error al eliminar el evento" });
+  }
+});
+
+
+app.get("/getadvice", async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.status(200).json(events);
+  } catch (error) {
+    console.error("Error al obtener los eventos:", error);
+    res.status(500).json({ error: "Error al obtener los eventos" });
+  }
+});
 
 app.listen(port, () => {
   console.log('Runnig SERVER ' + port);
