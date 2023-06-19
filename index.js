@@ -51,6 +51,7 @@ app.use(cors({
   credentials: true
 }));
 
+
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
@@ -475,4 +476,3 @@ app.get("/getadvice", async (req, res) => {
 app.listen(port, () => {
   console.log('Runnig SERVER ' + port);
 });
-//
