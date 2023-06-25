@@ -51,7 +51,6 @@ app.use(cors({
   credentials: true
 }));
 
-
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
@@ -411,43 +410,31 @@ app.post("/events", (req, res) => {
 
 
 // Ruta para crear un nuevo evento
-app.post("/createadvice", uploadMiddleware.single("image"), async (req, res) => {
+app.post("/createadvice", uploadMiddleware.single("image"), verifyToken, async (req, res) => {
   const { title, description, eventDate } = req.body;
 
-  const authHeader = req.headers.authorization;
+  try {
+    const cloudinaryUploadResult = await cloudinary.uploader.upload(req.file.path);
+    const { secure_url } = cloudinaryUploadResult;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Token de autorización no proporcionado" });
+    const newEvent = new Event({
+      title,
+      image: secure_url,
+      description,
+      eventDate,
+    });
+
+    const event = await newEvent.save();
+
+    res.status(201).json(event);
+  } catch (error) {
+    console.error("Error al crear el evento:", error);
+    res.status(500).json({ error: "Error al crear el evento" });
   }
-
-  const token = authHeader.split(" ")[1];
-
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
-    const { path } = req.file;
-
-    try {
-      const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
-      const { secure_url } = cloudinaryUploadResult;
-      const newEvent = new Event({
-        title,
-        image: secure_url,
-        description,
-        eventDate,
-      });
-
-      const event = await newEvent.save();
-
-      res.status(201).json(event);
-    } catch (error) {
-      console.error("Error al crear el evento:", error);
-      res.status(500).json({ error: "Error al crear el evento" });
-    }
-  });
 });
 
 // Ruta para eliminar un evento
-app.delete("/deleteadvice/:id", async (req, res) => {
+app.delete("/deleteadvice/:id", verifyToken, async (req, res) => {
   const eventId = req.params.id;
 
   try {
@@ -462,6 +449,66 @@ app.delete("/deleteadvice/:id", async (req, res) => {
   }
 });
 
+// Ruta para actualizar un evento
+app.put('/updateadvice/:id', uploadMiddleware.single('image'), verifyToken, async (req, res) => {
+  const eventId = req.params.id;
+  const { title, description, eventDate } = req.body;
+
+  try {
+    // Obtener el evento existente en la base de datos
+    const existingEvent = await Event.findById(eventId);
+
+    if (!existingEvent) {
+      return res.status(404).json({ error: 'Evento no encontrado' });
+    }
+
+    // Actualizar los datos del evento existente
+    existingEvent.title = title;
+    existingEvent.description = description;
+    existingEvent.eventDate = eventDate;
+
+    // Actualizar la imagen del evento si se adjuntó una nueva
+    if (req.file) {
+      // Subir la nueva imagen a Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path);
+
+      // Eliminar la imagen anterior de Cloudinary
+      if (existingEvent.image) {
+        await cloudinary.uploader.destroy(existingEvent.image);
+      }
+
+      existingEvent.image = result.secure_url;
+    }
+
+    const updatedEvent = await existingEvent.save();
+
+    return res.json(updatedEvent);
+  } catch (error) {
+    console.error('Error al actualizar el evento:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Middleware para verificar y decodificar el token de autorización
+function verifyToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Token de autorización no proporcionado' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  jwt.verify(token, secret, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Token de autorización inválido' });
+    }
+
+    // Agregar la información del usuario decodificada a la solicitud
+    req.user = decoded;
+    next();
+  });
+}
 
 app.get("/getadvice", async (req, res) => {
   try {
@@ -472,7 +519,6 @@ app.get("/getadvice", async (req, res) => {
     res.status(500).json({ error: "Error al obtener los eventos" });
   }
 });
-
 app.listen(port, () => {
   console.log('Runnig SERVER ' + port);
 });
