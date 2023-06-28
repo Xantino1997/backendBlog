@@ -191,11 +191,29 @@ app.get('/post/:id', async (req, res) => {
 })
 
 
+app.get('/post/:id', async (req, res) => {
+  const { id } = req.params;
+  const postDoc = await Post.findById(id).populate('author', ['username']);
+
+  if (!postDoc) {
+    return res.status(404).json({ error: 'Post not found' });
+  }
+
+  const { category } = postDoc;
+
+  // Obtener otros posts con la misma categoría
+  const relatedPosts = await Post.find({ category }).populate('author', ['username']);
+
+  res.json({ post: postDoc, relatedPosts });
+});
 
 
 // edit the post
 
+
+
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+  
   const { path } = req.file;
 
   const authHeader = req.headers.authorization;
@@ -208,7 +226,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
-    const { title, summary, content, profileAvatar, category } = req.body; // Agregado category
+    const { title, summary, content, profileAvatar } = req.body;
 
     try {
       const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
@@ -221,7 +239,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
         cover: secure_url, // Guarda la URL de Cloudinary en lugar de la ruta local
         profilePicture: profileAvatar,
         author: info.id,
-        category, // Guarda la categoría en la base de datos
       });
 
       const subscribers = await Suscriptor.find({}, 'email');
@@ -240,7 +257,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
           subject: 'Nuevo post creado',
           html: `Hola, ¿cómo estás? Queríamos contarte que se creó un nuevo post:<br><br>
           <h2>Título: ${title}</h2><br>
-          Categoría: ${category}<br><br>
           Dale click en el siguiente enlace:<br><br>
           <hr>
           <button style="background-color: #66b3ff; color: white; font-weight: bold; border-radius: 15px">
@@ -264,6 +280,45 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     }
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.post('/login', async (req, res) => {
