@@ -226,22 +226,21 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
-    const { title, summary, content, profileAvatar,category } = req.body;
+    const { title, summary, content, profileAvatar,category} = req.body;
 
     try {
       const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
       const { secure_url } = cloudinaryUploadResult;
 
-          const postDoc = await Post.create({
-          title,
-          summary,
-          content,
-          cover: secure_url, // Guarda la URL de Cloudinary en lugar de la ruta local
-          profilePicture: profileAvatar,
-          author: info.id,
-          category, // Agrega la propiedad "category" con su respectivo valor
-         });
-
+      const postDoc = await Post.create({
+        title,
+        summary,
+        content,
+        cover: secure_url, // Guarda la URL de Cloudinary en lugar de la ruta local
+        profilePicture: profileAvatar,
+        author: info.id,
+        category,
+      });
 
       const subscribers = await Suscriptor.find({}, 'email');
 
@@ -282,6 +281,65 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     }
   });
 });
+
+
+app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
+
+  let newPath = null;
+
+  if (req.file) {
+    const { path } = req.file;
+    newPath = path;
+  }
+
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Token de autorización no proporcionado' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const { id, title, summary, content } = req.body;
+    const postDoc = await Post.findById(id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    if (!isAuthor) {
+      return res.status(400).json('No eres el autor');
+    }
+
+    try {
+      let updatedCover = postDoc.cover;
+
+      if (newPath) {
+        const cloudinaryUploadResult = await cloudinary.uploader.upload(newPath);
+        updatedCover = cloudinaryUploadResult.secure_url;
+      }
+
+      await postDoc.update({
+        title,
+        summary,
+        content,
+        cover: updatedCover,
+      });
+
+      res.json(postDoc);
+    } catch (e) {
+      console.log(e);
+      res.status(400).json(e);
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
 
 
 app.post('/login', async (req, res) => {
@@ -330,56 +388,6 @@ app.post('/logout', (req, res) => {
   const newToken = ''; // Aquí puedes establecer el nuevo valor del token
 
   res.cookie('token', newToken).json();
-});
-
-app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-
-  let newPath = null;
-
-  if (req.file) {
-    const { path } = req.file;
-    newPath = path;
-  }
-
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Token de autorización no proporcionado' });
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
-    const { id, title, summary, content,category } = req.body;
-    const postDoc = await Post.findById(id);
-    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-    if (!isAuthor) {
-      return res.status(400).json('No eres el autor');
-    }
-
-    try {
-      let updatedCover = postDoc.cover;
-
-      if (newPath) {
-        const cloudinaryUploadResult = await cloudinary.uploader.upload(newPath);
-        updatedCover = cloudinaryUploadResult.secure_url;
-      }
-
-      await postDoc.update({
-        title,
-        summary,
-        content,
-        cover: updatedCover,
-        catgory
-      });
-
-      res.json(postDoc);
-    } catch (e) {
-      console.log(e);
-      res.status(400).json(e);
-    }
-  });
 });
 
 
@@ -538,6 +546,9 @@ app.get("/getadvice", async (req, res) => {
     res.status(500).json({ error: "Error al obtener los eventos" });
   }
 });
+
+
+
 app.listen(port, () => {
   console.log('Runnig SERVER ' + port);
 });
