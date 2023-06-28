@@ -226,7 +226,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
-    const { title, summary, content, profileAvatar } = req.body;
+    const { title, summary, content, profileAvatar,category } = req.body;
 
     try {
       const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
