@@ -232,14 +232,16 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
       const cloudinaryUploadResult = await cloudinary.uploader.upload(path);
       const { secure_url } = cloudinaryUploadResult;
 
-      const postDoc = await Post.create({
-        title,
-        summary,
-        content,
-        cover: secure_url, // Guarda la URL de Cloudinary en lugar de la ruta local
-        profilePicture: profileAvatar,
-        author: info.id,
-      });
+          const postDoc = await Post.create({
+          title,
+          summary,
+          content,
+          cover: secure_url, // Guarda la URL de Cloudinary en lugar de la ruta local
+          profilePicture: profileAvatar,
+          author: info.id,
+          category, // Agrega la propiedad "category" con su respectivo valor
+         });
+
 
       const subscribers = await Suscriptor.find({}, 'email');
 
