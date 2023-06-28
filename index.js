@@ -284,45 +284,6 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.post('/login', async (req, res) => {
 
   const { username, password } = req.body;
@@ -371,7 +332,6 @@ app.post('/logout', (req, res) => {
   res.cookie('token', newToken).json();
 });
 
-
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
   let newPath = null;
@@ -391,7 +351,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
-    const { id, title, summary, content } = req.body;
+    const { id, title, summary, content,category } = req.body;
     const postDoc = await Post.findById(id);
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
     if (!isAuthor) {
@@ -411,6 +371,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
         summary,
         content,
         cover: updatedCover,
+        catgory
       });
 
       res.json(postDoc);
