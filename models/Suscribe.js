@@ -15,8 +15,13 @@ const SuscriptorSchema = new Schema({
       unique: true,
       partialFilterExpression: { email: { $exists: true } }
     }
+  },
+  terms: {
+    type: String,
+    required: true
   }
 });
+
 
 const SuscriptorModel = model('Suscriptor', SuscriptorSchema);
 
