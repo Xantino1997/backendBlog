@@ -182,25 +182,25 @@ app.post('/suscriptors', async (req, res) => {
   }
 });
 
-// Manejador de ruta para /desuscribir
-app.post("/desuscribir", (req, res) => {
-  const { email, name } = req.body;
+// // Manejador de ruta para /desuscribir
+// app.post("/desuscribir", (req, res) => {
+//   const { email, name } = req.body;
 
-  // Aquí debes escribir el código para eliminar el suscriptor de la base de datos
-  // utilizando tu librería o ORM preferido
+//   // Aquí debes escribir el código para eliminar el suscriptor de la base de datos
+//   // utilizando tu librería o ORM preferido
 
-  // Ejemplo usando MongoDB con mongoose
-  const Suscriptor = require("./models/suscriptor"); // Importar el modelo de suscriptor
+//   // Ejemplo usando MongoDB con mongoose
+//   const Suscriptor = require("./models/suscriptor"); // Importar el modelo de suscriptor
 
-  Suscriptor.deleteOne({ email, name }, (err) => {
-    if (err) {
-      console.error("Error al eliminar el suscriptor:", err);
-      res.sendStatus(500); // Error interno del servidor
-    } else {
-      res.sendStatus(200); // Éxito
-    }
-  });
-});
+//   Suscriptor.deleteOne({ email, name }, (err) => {
+//     if (err) {
+//       console.error("Error al eliminar el suscriptor:", err);
+//       res.sendStatus(500); // Error interno del servidor
+//     } else {
+//       res.sendStatus(200); // Éxito
+//     }
+//   });
+// });
 
 
 
