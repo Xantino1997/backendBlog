@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const User = require('./models/User');
 const Post = require('./models/Post');
 const Suscriptor = require('./models/Suscribe');
+// const DeSuscriptor= require('./models/DeSuscriptor');
 const Event = require('./models/Event');
 const bcrypt = require('bcryptjs');
 const app = express();
@@ -106,7 +107,7 @@ let lastSubscriberId = 0;
 
 app.post('/suscriptors', async (req, res) => {
  
-  const { name, email } = req.body;
+  const { name, email,terms } = req.body;
 
   try {
     if (!email) {
@@ -125,7 +126,7 @@ app.post('/suscriptors', async (req, res) => {
       lastSubscriberId = lastSubscriber.id;
     }
 
-    const newSuscriptor = new Suscriptor({ name, email });
+    const newSuscriptor = new Suscriptor({ name, email,terms });
 
     // Incrementar el lastSubscriberId antes de guardar
     lastSubscriberId++;
@@ -181,6 +182,25 @@ app.post('/suscriptors', async (req, res) => {
   }
 });
 
+// Manejador de ruta para /desuscribir
+app.post("/desuscribir", (req, res) => {
+  const { email, name } = req.body;
+
+  // Aquí debes escribir el código para eliminar el suscriptor de la base de datos
+  // utilizando tu librería o ORM preferido
+
+  // Ejemplo usando MongoDB con mongoose
+  const Suscriptor = require("./models/suscriptor"); // Importar el modelo de suscriptor
+
+  Suscriptor.deleteOne({ email, name }, (err) => {
+    if (err) {
+      console.error("Error al eliminar el suscriptor:", err);
+      res.sendStatus(500); // Error interno del servidor
+    } else {
+      res.sendStatus(200); // Éxito
+    }
+  });
+});
 
 
 
@@ -283,7 +303,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 
-app.put('/post/', uploadMiddleware.single('file'), async (req, res) => {
+app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
 
   let newPath = null;
 
@@ -331,14 +351,6 @@ app.put('/post/', uploadMiddleware.single('file'), async (req, res) => {
     }
   });
 });
-
-
-
-
-
-
-
-
 
 
 
