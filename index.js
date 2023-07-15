@@ -13,7 +13,6 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 
-
 const cloudinary = require('cloudinary').v2;
 const dotenv = require('dotenv').config();
 
