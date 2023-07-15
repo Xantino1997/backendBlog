@@ -3,11 +3,7 @@ const { Schema, model } = mongoose;
 mongoose.set('strictQuery', false)
 
 const SuscriptorSchema = new Schema({
-  id: {
-    type: Number,
-    required: true,
-    unique: true
-  },
+
   name: String,
   email: {
     type: String,
