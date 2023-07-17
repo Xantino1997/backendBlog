@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
+const { v4: uuidv4 } = require('uuid');
 
 const cloudinary = require('cloudinary').v2;
 const dotenv = require('dotenv').config();
@@ -190,9 +191,7 @@ app.post('/suscriptors', async (req, res) => {
 
 
 
-
-
-let desuscriptorNumber = 1; // Variable para llevar el contador de desuscriptores
+// let desuscriptorNumber = 1; // Variable para llevar el contador de desuscriptores
 const desuscritos = [];
 
 // Ruta para desuscribir al suscriptor
@@ -223,12 +222,11 @@ app.post('/desuscribir', async (req, res) => {
     // Actualizar el suscriptor en la base de datos
     suscriptor.name = name;
 
-    let newDesuscriptorEmail = `desuscripto${desuscriptorNumber}@gmail.com`;
+    let newDesuscriptorEmail = `desuscripto-${uuidv4()}@gmail.com`;
 
-    // Verificar si el correo electrónico ya existe en el array desuscritos y asignar el siguiente número disponible
+    // Verificar si el correo electrónico ya existe en el array desuscritos y asignar uno nuevo
     while (desuscritos.includes(newDesuscriptorEmail)) {
-      desuscriptorNumber++;
-      newDesuscriptorEmail = `desuscripto${desuscriptorNumber}@gmail.com`;
+      newDesuscriptorEmail = `desuscripto-${uuidv4()}@gmail.com`;
     }
 
     suscriptor.email = newDesuscriptorEmail;
@@ -237,11 +235,7 @@ app.post('/desuscribir', async (req, res) => {
     // Agregar el correo electrónico desuscrito al array
     desuscritos.push(suscriptor.email);
 
-    // Incrementar el contador de desuscriptores
-    desuscriptorNumber++;
-
     // Resto del código para enviar el correo electrónico y devolver la respuesta adecuada
-
     const config = {
       host: 'smtp.gmail.com',
       port: 587,
@@ -251,12 +245,6 @@ app.post('/desuscribir', async (req, res) => {
         pass: "iescuoxwerackzdr"
       },
     };
-    const wts = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/800px-WhatsApp.svg.png";
-    const inst = "https://img.freepik.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?w=360";
-    const fb = "https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-facebook-social-media-icon-png-image_6315968.png";
-
-    const sentidos = "https://igtrigo.com/wp-content/uploads/2018/11/labio-leporino-y-paladar-hendido.jpg";
-    const year = new Date().getFullYear();
 
     const transporter = nodemailer.createTransport(config);
     const mailOptions = {
@@ -271,16 +259,16 @@ app.post('/desuscribir', async (req, res) => {
         <p>Ingresa a nuestras redes:</p>
         <footer>
         <div className="footer-content">
-          <div><img className="titulo-footer" src="${sentidos}" style="width: 300px; height: 150px;" alt="Sentidos"></div>
+          <div><img className="titulo-footer" src="https://igtrigo.com/wp-content/uploads/2018/11/labio-leporino-y-paladar-hendido.jpg" style="width: 300px; height: 150px;" alt="Sentidos"></div>
           <div className="footer-social">
             <h4>Nuestras Redes</h4>
             <a className="footer-whatsapp" href="https://api.whatsapp.com/send?phone=543462529718&text=Hola%20me%20encontré%20con%20esta%20página%20y%20quería%20recibir%20información%20sobre%20Sentidos" target="_blank">
-           <img className="footer-whatsapp" src="${wts}" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
-            <a className="footer-instagram" href="https://www.instagram.com" target="_blank"><img className="footer-instagram" src="${inst}" alt="Instagram" style="width: 50px; height: 50px;" /></a>
-            <a className="footer-facebook" href="https://www.facebook.com/SentidosAsociacion/" target="_blank"><img className="footer-facebook" src="${fb}" alt="Facebook" style="width: 50px; height: 50px;" /></a>
+           <img className="footer-whatsapp" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/800px-WhatsApp.svg.png" alt="WhatsApp" style="width: 50px; height: 50px;" /></a>
+            <a className="footer-instagram" href="https://www.instagram.com" target="_blank"><img className="footer-instagram" src="https://img.freepik.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?w=360" alt="Instagram" style="width: 50px; height: 50px;" /></a>
+            <a className="footer-facebook" href="https://www.facebook.com/SentidosAsociacion/" target="_blank"><img className="footer-facebook" src="https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-facebook-social-media-icon-png-image_6315968.png" alt="Facebook" style="width: 50px; height: 50px;" /></a>
           </div>
         </div> 
-        <p className="copy">&copy; ${year} <b>Sentidos</b></p>
+        <p className="copy">&copy; ${new Date().getFullYear()} <b>Sentidos</b></p>
       </footer>
       `
     };
@@ -300,6 +288,8 @@ app.post('/desuscribir', async (req, res) => {
     res.status(500).json({ message: 'Ocurrió un error al desuscribir al suscriptor' });
   }
 });
+
+
 
 
 
