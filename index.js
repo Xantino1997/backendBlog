@@ -188,6 +188,11 @@ app.post('/suscriptors', async (req, res) => {
   }
 });
 
+
+
+
+
+let desuscriptorNumber = 1; // Variable para llevar el contador de desuscriptores
 const desuscritos = [];
 
 // Ruta para desuscribir al suscriptor
@@ -217,11 +222,23 @@ app.post('/desuscribir', async (req, res) => {
 
     // Actualizar el suscriptor en la base de datos
     suscriptor.name = name;
-    suscriptor.email = `desuscripto${desuscritos.length + 1}@gmail.com`;
+
+    let newDesuscriptorEmail = `desuscripto${desuscriptorNumber}@gmail.com`;
+
+    // Verificar si el correo electrónico ya existe en el array desuscritos y asignar el siguiente número disponible
+    while (desuscritos.includes(newDesuscriptorEmail)) {
+      desuscriptorNumber++;
+      newDesuscriptorEmail = `desuscripto${desuscriptorNumber}@gmail.com`;
+    }
+
+    suscriptor.email = newDesuscriptorEmail;
     await suscriptor.save();
 
     // Agregar el correo electrónico desuscrito al array
-    desuscritos.push(email);
+    desuscritos.push(suscriptor.email);
+
+    // Incrementar el contador de desuscriptores
+    desuscriptorNumber++;
 
     // Resto del código para enviar el correo electrónico y devolver la respuesta adecuada
 
@@ -244,7 +261,7 @@ app.post('/desuscribir', async (req, res) => {
     const transporter = nodemailer.createTransport(config);
     const mailOptions = {
       from: 'sentidospadres@gmail.com',
-      to: email,
+      to: suscriptor.email,
       subject: 'Desuscripción al Post de Sentidos Padres',
       html: `
         <p>¡Hola <b>${name}</b>!</p>
@@ -283,6 +300,7 @@ app.post('/desuscribir', async (req, res) => {
     res.status(500).json({ message: 'Ocurrió un error al desuscribir al suscriptor' });
   }
 });
+
 
 
 app.get('/post/:id', async (req, res) => {
